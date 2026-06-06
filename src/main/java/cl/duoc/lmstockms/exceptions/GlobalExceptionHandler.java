@@ -1,10 +1,15 @@
 package cl.duoc.lmstockms.exceptions;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -39,5 +44,14 @@ public class GlobalExceptionHandler {
         problemDetail.setDetail(exception.getMessage());
         return problemDetail;
     }
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Map<String, Object>> handleRuntimeException(RuntimeException ex) {
+        Map<String, Object> respuesta = new HashMap<>();
+        respuesta.put("timestamp", LocalDateTime.now().toString());
+        respuesta.put("status", 500);
+        respuesta.put("error", ex.getMessage());
 
+         // Pasa 'ex' para ver el StackTrace completo en logs
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuesta);
+    }
 }
