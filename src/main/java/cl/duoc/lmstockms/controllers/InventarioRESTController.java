@@ -5,6 +5,11 @@ import cl.duoc.lmstockms.dtos.InventarioResponseDTO;
 import cl.duoc.lmstockms.dtos.InventarioUpdateDTO;
 import cl.duoc.lmstockms.services.InventarioService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -21,14 +26,37 @@ import java.util.List;
 @RequestMapping("/api/v1/inventarios")
 @Tag(name = "Stock", description = "Gestion de inventario")
 public class InventarioRESTController {
+
     private static final Logger logger = LoggerFactory.getLogger(InventarioRESTController.class.getName());
 
     @Autowired
     private InventarioService inventarioService;
 
     //CREATE:
-    @PostMapping
+    @ApiResponses( value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Se ha creado registro",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = InventarioResponseDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Sintáxis incorrecta",
+                    content = @Content(schema = @Schema(hidden = true))
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Conflicto al hacer solicitud (ej: productoId ya existe)",
+                    content = @Content(schema = @Schema(hidden = true))
+            )
+        }
+    )
+
     @Operation(summary = "Crea inventario", description = "Guarda un registro nuevo de inventario")
+    @PostMapping
     public ResponseEntity<InventarioResponseDTO> save(@Valid @RequestBody InventarioInputDTO dto){
         String logMsgRequest = "Recibiendo solicitud para crear/guardar inventario.";
         String logMsg = "Solicitud para crear/guardar inventario.";
@@ -42,6 +70,28 @@ public class InventarioRESTController {
     }
 
     //READ:
+    @ApiResponses( value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Se han encontrado registros",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = InventarioResponseDTO.class))
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Sintáxis incorrecta",
+                    content = @Content(schema = @Schema(hidden = true))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "No se han encontrado registros",
+                    content = @Content(schema = @Schema(hidden = true))
+            )
+        }
+    )
+
     @GetMapping
     @Operation(summary = "Lista todo", description = "Muestra todos los registros de inventarios")
     public ResponseEntity<List<InventarioResponseDTO>> findAll(){
@@ -58,6 +108,28 @@ public class InventarioRESTController {
         return ResponseEntity.noContent().build();
     }
 
+    @ApiResponses( value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Se ha encontrado el registro por ID",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = InventarioResponseDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Sintáxis incorrecta",
+                    content = @Content(schema = @Schema(hidden = true))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "No se ha encontrado el registro",
+                    content = @Content(schema = @Schema(hidden = true))
+            )
+        }
+    )
+
     @GetMapping("/{id}")
     @Operation(summary = "Encuentra por ID", description = "Trae el registro perteneciente al ID ingresado")
     public ResponseEntity<InventarioResponseDTO> findById(@PathVariable Long id){
@@ -73,8 +145,30 @@ public class InventarioRESTController {
         return ResponseEntity.notFound().build();
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Se ha encontrado registro por ID de producto",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = InventarioResponseDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Sintáxis incorrecta",
+                    content = @Content(schema = @Schema(hidden = true))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "No se ha encontrado registro",
+                    content = @Content(schema = @Schema(hidden = true))
+            )
+        }
+    )
+
     @GetMapping("/by-id-producto/{productoId}")
-    @Operation(summary = "Encuentra por ID??", description = "Trae el registro perteneciente a Inventarios según ID de producto")
+    @Operation(summary = "Encuentra por ID", description = "Trae el registro perteneciente a Inventarios según ID de producto")
     public ResponseEntity<InventarioResponseDTO> findByProductoId(@PathVariable Long productoId){
         String logMsgRequest = "Recibiendo solicitud para buscar inventario por ID: " + productoId + ".";
         String logMsg = "Solicitud para buscar inventario por ID: " + productoId + ".";
@@ -87,6 +181,28 @@ public class InventarioRESTController {
         logger.info(logMsg + "=> no encontrado.");
         return ResponseEntity.notFound().build();
     }
+
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Se ha actualizado el registro",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = InventarioResponseDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Sintáxis incorrecta",
+                    content = @Content(schema = @Schema(hidden = true))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "No se han encontrado registros",
+                    content = @Content(schema = @Schema(hidden = true))
+            )
+        }
+    )
 
     //UPDATE:
     @PutMapping("/{id}")
@@ -104,6 +220,29 @@ public class InventarioRESTController {
         //devuelve el estado y la locación //devuelve el objeto creado
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Se ha eliminado el registro",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = InventarioResponseDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Sintáxis incorrecta",
+                    content = @Content(schema = @Schema(hidden = true))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "No se ha encontrado el registro",
+                    content = @Content(schema = @Schema(hidden = true))
+            )
+
+            
+        }
+    )
     //DELETE:
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar por ID", description = "Elimina el registro perteneciente al ID")
