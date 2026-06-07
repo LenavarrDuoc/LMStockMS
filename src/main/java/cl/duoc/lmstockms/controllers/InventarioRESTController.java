@@ -74,10 +74,10 @@ public class InventarioRESTController {
     }
 
     @GetMapping("/by-id-producto/{productoId}")
-    @Operation(summary = "Encuentra por run??", description = "Trae el")
-    public ResponseEntity<InventarioResponseDTO> findByNumRun(@PathVariable Long productoId){
-        String logMsgRequest = "Recibiendo solicitud para buscar inventario por R.U.N.: " + productoId + ".";
-        String logMsg = "Solicitud para buscar inventario por R.U.N.: " + productoId + ".";
+    @Operation(summary = "Encuentra por ID??", description = "Trae el registro perteneciente a Inventarios según ID de producto")
+    public ResponseEntity<InventarioResponseDTO> findByProductoId(@PathVariable Long productoId){
+        String logMsgRequest = "Recibiendo solicitud para buscar inventario por ID: " + productoId + ".";
+        String logMsg = "Solicitud para buscar inventario por ID: " + productoId + ".";
         logger.info(logMsgRequest);
         InventarioResponseDTO dto = inventarioService.findByProductoId(productoId);
         if (dto != null){
