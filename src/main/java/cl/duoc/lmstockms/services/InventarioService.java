@@ -61,6 +61,11 @@ public class InventarioService {
     }
 
     @Transactional(readOnly = true)
+    public Boolean existsById(Long id) {
+        return inventarioRepository.existsById(id);
+    }
+
+    @Transactional(readOnly = true)
     public InventarioResponseDTO findByProductoId(Long id) {
         Inventario ent = inventarioRepository.findByProductoId(id);
         if (ent == null) {
