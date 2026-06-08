@@ -1,4 +1,4 @@
-CREATE TABLE inventarios (
+CREATE TABLE IF NOT EXISTS inventarios (
                              id BIGINT AUTO_INCREMENT PRIMARY KEY,
                              fk_producto_id BIGINT NOT NULL,
                              cantidad INT NOT NULL,

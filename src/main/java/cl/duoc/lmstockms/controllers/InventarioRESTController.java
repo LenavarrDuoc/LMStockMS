@@ -12,9 +12,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -24,13 +25,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/inventarios")
+@RequiredArgsConstructor
 @Tag(name = "Stock", description = "Gestion de inventario")
 public class InventarioRESTController {
 
     private static final Logger logger = LoggerFactory.getLogger(InventarioRESTController.class.getName());
 
-    @Autowired
-    private InventarioService inventarioService;
+    private final InventarioService inventarioService;
 
     //CREATE:
     @ApiResponses( value = {
@@ -54,7 +55,6 @@ public class InventarioRESTController {
             )
         }
     )
-
     @Operation(summary = "Crea inventario", description = "Guarda un registro nuevo de inventario")
     @PostMapping
     public ResponseEntity<InventarioResponseDTO> save(@Valid @RequestBody InventarioInputDTO dto){
@@ -91,7 +91,6 @@ public class InventarioRESTController {
             )
         }
     )
-
     @GetMapping
     @Operation(summary = "Lista todo", description = "Muestra todos los registros de inventarios")
     public ResponseEntity<List<InventarioResponseDTO>> findAll(){
@@ -129,7 +128,6 @@ public class InventarioRESTController {
             )
         }
     )
-
     @GetMapping("/{id}")
     @Operation(summary = "Encuentra por ID", description = "Trae el registro perteneciente al ID ingresado")
     public ResponseEntity<InventarioResponseDTO> findById(@PathVariable Long id){
@@ -166,7 +164,6 @@ public class InventarioRESTController {
             )
         }
     )
-
     @GetMapping("/by-id-producto/{productoId}")
     @Operation(summary = "Encuentra por ID", description = "Trae el registro perteneciente a Inventarios según ID de producto")
     public ResponseEntity<InventarioResponseDTO> findByProductoId(@PathVariable Long productoId){
@@ -203,7 +200,6 @@ public class InventarioRESTController {
             )
         }
     )
-
     //UPDATE:
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar por ID", description = "Actualiza información de registro perteneciente al ID ingresado")
@@ -239,7 +235,6 @@ public class InventarioRESTController {
                     description = "No se ha encontrado el registro",
                     content = @Content(schema = @Schema(hidden = true))
             )
-
             
         }
     )

@@ -4,7 +4,6 @@ import cl.duoc.lmstockms.clients.ToAPICatalogFeign;
 import cl.duoc.lmstockms.dtos.InventarioInputDTO;
 import cl.duoc.lmstockms.dtos.InventarioResponseDTO;
 import cl.duoc.lmstockms.dtos.InventarioUpdateDTO;
-import cl.duoc.lmstockms.dtos.ProductoDTO;
 import cl.duoc.lmstockms.exceptions.IdExisteException;
 import cl.duoc.lmstockms.exceptions.IdNoExisteException;
 import cl.duoc.lmstockms.mappers.InventarioInputMapper;
