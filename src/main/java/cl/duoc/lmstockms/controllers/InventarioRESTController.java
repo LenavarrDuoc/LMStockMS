@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -25,13 +26,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/inventarios")
-@RequiredArgsConstructor
 @Tag(name = "Stock", description = "Gestion de inventario")
 public class InventarioRESTController {
 
     private static final Logger logger = LoggerFactory.getLogger(InventarioRESTController.class.getName());
 
-    private final InventarioService inventarioService;
+    @Autowired
+    private InventarioService inventarioService;
 
     //CREATE:
     @ApiResponses( value = {

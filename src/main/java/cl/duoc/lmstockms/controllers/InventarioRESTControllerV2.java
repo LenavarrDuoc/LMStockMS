@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
@@ -33,14 +34,17 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
 @RequestMapping("/api/v2/inventarios")
-@RequiredArgsConstructor
 @Tag(name = "Stock v2", description = "Gestion de inventario")
 public class InventarioRESTControllerV2 {
     
     //TO DO: ADAPTAR LOGS A CONTEXTO HATEOAS
     private static final Logger logger = LoggerFactory.getLogger(InventarioRESTController.class.getName());
-    private final InventarioService inventarioService;
-    private final InventarioModelAssembler assembler;
+
+    @Autowired
+    private InventarioService inventarioService;
+
+    @Autowired
+    private InventarioModelAssembler assembler;
 
     //CREATE:
     @PostMapping(produces = MediaTypes.HAL_JSON_VALUE)
