@@ -42,7 +42,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 public class InventarioRESTControllerV2 {
     
     //TO DO: ADAPTAR LOGS A CONTEXTO HATEOAS
-    private static final Logger logger = LoggerFactory.getLogger(InventarioRESTController.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(InventarioRESTControllerV2.class.getName());
 
     @Autowired
     private InventarioService inventarioService;
