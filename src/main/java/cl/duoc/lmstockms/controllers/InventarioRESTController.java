@@ -5,6 +5,7 @@ import cl.duoc.lmstockms.dtos.InventarioResponseDTO;
 import cl.duoc.lmstockms.dtos.InventarioUpdateDTO;
 import cl.duoc.lmstockms.services.InventarioService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -130,7 +131,7 @@ public class InventarioRESTController {
     )
     @GetMapping("/{id}")
     @Operation(summary = "Encuentra por ID", description = "Trae el registro perteneciente al ID ingresado")
-    public ResponseEntity<InventarioResponseDTO> findById(@PathVariable Long id){
+    public ResponseEntity<InventarioResponseDTO> findById(@Parameter(description = "ID de inventario", required = true) @PathVariable Long id){
         String logMsgRequest = "Recibiendo solicitud para buscar inventario por ID: " + id + ".";
         String logMsg = "Solicitud para buscar inventario por ID: " + id + ".";
         logger.info(logMsgRequest);
@@ -166,7 +167,7 @@ public class InventarioRESTController {
     )
     @GetMapping("/by-id-producto/{productoId}")
     @Operation(summary = "Encuentra por ID", description = "Trae el registro perteneciente a Inventarios según ID de producto")
-    public ResponseEntity<InventarioResponseDTO> findByProductoId(@PathVariable Long productoId){
+    public ResponseEntity<InventarioResponseDTO> findByProductoId(@Parameter(description = "ID de producto", required = true) @PathVariable Long productoId){
         String logMsgRequest = "Recibiendo solicitud para buscar inventario por ID: " + productoId + ".";
         String logMsg = "Solicitud para buscar inventario por ID: " + productoId + ".";
         logger.info(logMsgRequest);
@@ -203,7 +204,7 @@ public class InventarioRESTController {
     //UPDATE:
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar por ID", description = "Actualiza información de registro perteneciente al ID ingresado")
-    public ResponseEntity<InventarioResponseDTO> update(@Valid @RequestBody InventarioUpdateDTO ent, @PathVariable Long id){
+    public ResponseEntity<InventarioResponseDTO> update(@Parameter(description = "ID de inventario", required = true) @Valid @RequestBody InventarioUpdateDTO ent, @PathVariable Long id){
         String logMsgRequest = "Recibiendo solicitud para actualizar inventario con ID: " + id + ".";
         String logMsg = "Solicitud para actualizar inventario con ID: " + id + ".";
         logger.info(logMsgRequest);
@@ -241,7 +242,7 @@ public class InventarioRESTController {
     //DELETE:
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar por ID", description = "Elimina el registro perteneciente al ID")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id){
+    public ResponseEntity<Void> deleteById(@Parameter(description = "ID de inventario", required = true) @PathVariable Long id){
         String logMsgRequest = "Recibiendo solicitud para borrar inventario con ID: " + id + ".";
         String logMsg = "Solicitud para borrar inventario con ID: " + id + ".";
         logger.info(logMsgRequest);
