@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  lmcatalogms:
+    build: .
+    container_name: lmstockms
+    environment:
+      - SPRING_APPLICATION_NAME=lmstockms
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://host.docker.internal:8090/eureka
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/stock_db
+      - SPRING_DATASOURCE_USERNAME=stockuser
+      - SPRING_DATASOURCE_PASSWORD=stock1234
+    networks:
+      - ms-network
+
+networks:
+  ms-network:
+    driver: bridge
