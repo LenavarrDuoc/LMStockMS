@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   lmstockms:
     build: .
@@ -7,15 +6,15 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      - SPRING_APPLICATION_NAME=lmstockms
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://host.docker.internal:8090/eureka
+      - SPRING_APPLICATION_NAME=LMStockMS
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8090/eureka
       - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
       - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/stock_db
       - SPRING_DATASOURCE_USERNAME=stockuser
       - SPRING_DATASOURCE_PASSWORD=stock1234
     networks:
-      - ms-network
+      - libmark-network
 
 networks:
-  ms-network:
-    driver: bridge
+  libmark-network:
+    external: true
