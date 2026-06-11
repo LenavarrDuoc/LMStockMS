@@ -15,7 +15,7 @@ public class InventarioModelAssembler implements RepresentationModelAssembler<In
     @Override
     public EntityModel<InventarioResponseDTO> toModel(InventarioResponseDTO inventario){
         return EntityModel.of(inventario,
-             // Link "self": Enlace directo a este género específico basado en su ID
+                // Link "self": Enlace directo a este género específico basado en su ID
                 linkTo(methodOn(InventarioRESTControllerV2.class).findById(inventario.getId())).withSelfRel(),
                 // Link "inventarios": Enlace de retorno hacia la colección completa v2
                 linkTo(methodOn(InventarioRESTControllerV2.class).findAll()).withRel("inventarios")
