@@ -1,0 +1,84 @@
+server:
+  # Cambiar nombre a este archivo a applicationv2.yml y borrar el "V1" a appplicationV1.properties para restaurar el archivo original en caso de problemas.
+  # Lo mismo a la inversa si se requiere dejar el archivo.yml
+  # Puerto designado sin eureka corriendo:
+  # port: 8086
+  # Con Eureka, dejamos el puerto 0 para que sea Eureka quien designe puertos automáticamente.
+  port: 0
+
+spring:
+  application:
+    name: LMStockMS
+
+  ##### BD MySQL ######
+  datasource:
+    url: jdbc:mysql://localhost:3306/stock_db
+    #                             servicio://dirección:puerto/nombre_de_la_bd
+    username: stockuser
+    #stockuser
+    password: stock1234 # stock1234 (Vacío según tu config original)
+
+  # Config de Spring con MySQL:
+  jpa:
+    hibernate:
+      # Solo utilizamos create-drop al estar creando las entidades y configurando la BD.
+      # Una vez definida, debemos trabajar con update:
+      ddl-auto: validate
+      # ddl-auto: update
+
+    # Muestra un pseudocódigo SQL por consola para saber qué procedimiento SQL se está ejecutando.
+    show-sql: true
+    properties:
+      hibernate:
+        # Le da el formato típico SQL al pseudocódigo mostrado por consola.
+        format_sql: true
+        # Define el dialecto de SQL a utilizar. En este caso, de MySQL.
+        dialect: org.hibernate.dialect.MySQLDialect
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8090/eureka/
+  instance:
+    # Crea un ID único y aleatorio para el servicio y, así, evitar que choquen entre sí al usar puerto 0.
+    instance-id: ${spring.application.name}:${random.value}
+    # Esto obliga a Eureka a mostrar el puerto real (o IP) en su dashboard.
+    prefer-ip-address: true
+
+# SWAGGER / SPRINGDOC
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api/v1/inventarios/v3/api-docs
+
+###### LOGS ######
+logging:
+  # Niveles/capas y grupos de acción de Logging:
+  # ROOT: desde nivel raíz, incluyendo todo.
+  # DEBUG: Info detallada para desarrollo y depuración.
+  # INFO: Info general sobre el funcionamiento de aplicación.
+  # WARN: Advertencia sobre potenciales problemas.
+  # ERROR: errores de ejecución/funcionamiento.
+  level:
+    root: INFO
+    # Logs por paquete:
+    cl.duoc.lmstockms: DEBUG
+    # Conversión y comunicación a BD:
+    org.hibernate: ERROR
+
+  # Formato del log con "pattern" (timestamp, nivel de log, clase, y mensaje).
+  # -5level: alineación a la izquierda con max 5 caracteres.
+  # %logger{50}: largo de caracteres del nombre del logger detallado.
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{50} - %msg%n"
+    # Define en qué formato se guardarán los logs en el archivo:
+    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{50} - %msg%n"
+
+  # Guardar los logs en un archivo para su registro (no solo en consola):
+  file:
+    name: logs/LMStockMS.log
+
+  logback:
+    rollingpolicy:
+      # Retención de archivos: por cuántos días se mantendrá el historial de logs diarios.
+      max-history: 30
