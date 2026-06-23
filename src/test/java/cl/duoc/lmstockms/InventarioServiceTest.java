@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import cl.duoc.lmstockms.clients.ToAPICatalogFeign;
+import cl.duoc.lmstockms.dtos.InventarioInputDTO;
 import cl.duoc.lmstockms.dtos.InventarioResponseDTO;
 import cl.duoc.lmstockms.dtos.InventarioUpdateDTO;
 import cl.duoc.lmstockms.dtos.ProductoDTO;
@@ -110,10 +111,11 @@ public class InventarioServiceTest {
     @Test
     void updateTest(){
         Inventario inventario = new Inventario(1L, 3L, 20, true);
-        InventarioUpdateDTO invUpdated = new InventarioUpdateDTO(1L, 3L, 15, false);
+        InventarioUpdateDTO invUpdate = new InventarioUpdateDTO(1L, 3L, 15, false);
 
         when(inventarioRepository.findById(inventario.getId())).thenReturn(Optional.of(inventario));
 
+        //se corrobora lo que llegó al .save() sea el updateDTO, invocando su argumento 
         when(inventarioRepository.save(any(Inventario.class))).thenAnswer(invocacion -> invocacion.getArgument(0));
 
         ProductoDTO productoDTO = new ProductoDTO(
@@ -123,7 +125,7 @@ public class InventarioServiceTest {
 
         when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO);
 
-        InventarioResponseDTO resultado = inventarioService.update(invUpdated);
+        InventarioResponseDTO resultado = inventarioService.update(invUpdate);
 
         assertNotNull(resultado);
         assertEquals(15, resultado.getCantidad());
@@ -132,8 +134,21 @@ public class InventarioServiceTest {
     }
 
     @Test
-    @Disabled
     void saveTest(){
+        ProductoDTO productoDTO = new ProductoDTO(
+            3L, "Java for Dummies", "Terry A. Burd", "Wiley", "Programación", 2022, 26725.0, 5,
+            "978-111-98-6164-5", "desc", 1L, "Distribuidora Libros"
+        );
 
+        when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO);
+
+        when(inventarioRepository.save(any(Inventario.class))).thenAnswer(invocacion -> invocacion.getArgument(0));
+
+        InventarioInputDTO invInput = new InventarioInputDTO(3L, 20, true);
+
+        InventarioResponseDTO resultado = inventarioService.save(invInput);
+
+        assertNotNull(resultado);
+        assertEquals(invInput.getProductoId(), resultado.getProductoId());
     }
 }
