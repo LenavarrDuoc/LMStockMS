@@ -660,3 +660,55 @@
 2026-06-23 11:51:28 INFO  o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
 2026-06-23 11:51:28 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
 2026-06-23 11:51:28 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-06-23 12:03:25 INFO  cl.duoc.lmstockms.InventarioServiceTest - Starting InventarioServiceTest using Java 21.0.11 with PID 21891 (started by apric in /run/media/apric/a0483016-93be-4d8d-b285-30d2ee3fccb7/GitHub/lbMarket/LMStockMS)
+2026-06-23 12:03:25 DEBUG cl.duoc.lmstockms.InventarioServiceTest - Running with Spring Boot v4.0.0, Spring v7.0.1
+2026-06-23 12:03:25 INFO  cl.duoc.lmstockms.InventarioServiceTest - The following 1 profile is active: "test"
+2026-06-23 12:03:26 INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-23 12:03:26 INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 85 ms. Found 1 JPA repository interface.
+2026-06-23 12:03:26 INFO  o.springframework.cloud.context.scope.GenericScope - BeanFactory id=486c2934-4218-352e-a9d9-701872d1a868
+2026-06-23 12:03:27 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-06-23 12:03:27 INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@44d2bbc0
+2026-06-23 12:03:27 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-06-23 12:03:27 INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/stock_db_test (MySQL 12.3)
+2026-06-23 12:03:27 WARN  org.flywaydb.core.internal.database.base.Database - Using MariaDB 12.3 which is newer than the version Flyway has been verified with. The latest verified version of MariaDB is 11.7.
+2026-06-23 12:03:27 INFO  org.flywaydb.core.internal.command.DbValidate - Successfully validated 2 migrations (execution time 00:00.023s)
+2026-06-23 12:03:27 INFO  org.flywaydb.core.internal.command.DbMigrate - Current version of schema `stock_db_test`: 2
+2026-06-23 12:03:27 INFO  org.flywaydb.core.internal.command.DbMigrate - Schema `stock_db_test` is up to date. No migration necessary.
+2026-06-23 12:03:28 INFO  o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-23 12:03:28 INFO  o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-23 12:03:28 WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-23 12:03:29 INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name userDetailsService
+2026-06-23 12:03:29 INFO  o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration - Eureka HTTP Client uses RestClient.
+2026-06-23 12:03:29 WARN  o.s.c.l.c.LoadBalancerCacheAutoConfiguration$LoadBalancerCaffeineWarnLogger - Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-23 12:03:29 INFO  cl.duoc.lmstockms.InventarioServiceTest - Started InventarioServiceTest in 4.781 seconds (process running for 5.601)
+2026-06-23 12:03:29 INFO  o.s.cloud.netflix.eureka.InstanceInfoFactory - Setting initial instance status as: STARTING
+2026-06-23 12:03:29 INFO  o.s.c.n.e.serviceregistry.EurekaServiceRegistry - Unregistering application LMSTOCKMS with eureka with status DOWN
+2026-06-23 12:03:30 INFO  o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-06-23 12:03:30 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-06-23 12:03:30 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-06-23 12:05:21 INFO  cl.duoc.lmstockms.InventarioServiceTest - Starting InventarioServiceTest using Java 21.0.11 with PID 22480 (started by apric in /run/media/apric/a0483016-93be-4d8d-b285-30d2ee3fccb7/GitHub/lbMarket/LMStockMS)
+2026-06-23 12:05:21 DEBUG cl.duoc.lmstockms.InventarioServiceTest - Running with Spring Boot v4.0.0, Spring v7.0.1
+2026-06-23 12:05:21 INFO  cl.duoc.lmstockms.InventarioServiceTest - The following 1 profile is active: "test"
+2026-06-23 12:05:21 INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-23 12:05:21 INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 83 ms. Found 1 JPA repository interface.
+2026-06-23 12:05:22 INFO  o.springframework.cloud.context.scope.GenericScope - BeanFactory id=486c2934-4218-352e-a9d9-701872d1a868
+2026-06-23 12:05:23 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-06-23 12:05:23 INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@460df441
+2026-06-23 12:05:23 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-06-23 12:05:23 INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/stock_db_test (MySQL 12.3)
+2026-06-23 12:05:23 WARN  org.flywaydb.core.internal.database.base.Database - Using MariaDB 12.3 which is newer than the version Flyway has been verified with. The latest verified version of MariaDB is 11.7.
+2026-06-23 12:05:23 INFO  org.flywaydb.core.internal.command.DbValidate - Successfully validated 2 migrations (execution time 00:00.022s)
+2026-06-23 12:05:23 INFO  org.flywaydb.core.internal.command.DbMigrate - Current version of schema `stock_db_test`: 2
+2026-06-23 12:05:23 INFO  org.flywaydb.core.internal.command.DbMigrate - Schema `stock_db_test` is up to date. No migration necessary.
+2026-06-23 12:05:23 INFO  o.s.o.j.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-23 12:05:24 INFO  o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-23 12:05:24 WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-23 12:05:24 INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name userDetailsService
+2026-06-23 12:05:25 INFO  o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration - Eureka HTTP Client uses RestClient.
+2026-06-23 12:05:25 WARN  o.s.c.l.c.LoadBalancerCacheAutoConfiguration$LoadBalancerCaffeineWarnLogger - Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-23 12:05:25 INFO  cl.duoc.lmstockms.InventarioServiceTest - Started InventarioServiceTest in 4.786 seconds (process running for 5.642)
+2026-06-23 12:05:25 INFO  o.s.cloud.netflix.eureka.InstanceInfoFactory - Setting initial instance status as: STARTING
+2026-06-23 12:05:25 INFO  o.s.c.n.e.serviceregistry.EurekaServiceRegistry - Unregistering application LMSTOCKMS with eureka with status DOWN
+2026-06-23 12:05:25 INFO  o.s.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-06-23 12:05:25 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-06-23 12:05:25 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

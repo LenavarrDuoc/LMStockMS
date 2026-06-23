@@ -67,7 +67,7 @@ public class InventarioService {
     public InventarioResponseDTO findByProductoId(Long id) {
         Inventario ent = inventarioRepository.findByProductoId(id);
         if (ent == null) {
-            throw new IdExisteException("ID de producto no existe.");
+            throw new IdNoExisteException("ID de producto no existe.");
         }
         return inventarioResponseMapper.toDto(ent);
     }

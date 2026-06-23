@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,22 @@ public class InventarioServiceTest {
     @MockitoBean
     private ToAPICatalogFeign toAPICatalogFeign;
 
+    private ProductoDTO productoDTO_ej1;
+    private ProductoDTO productoDTO_ej2;
+
+    @BeforeEach
+    void setUp(){
+        productoDTO_ej1 = new ProductoDTO(
+            3L, "Java for Dummies", "Terry A. Burd", "Wiley", "Programación", 2022, 26725.0, 5,
+            "978-111-98-6164-5", "desc", 1L, "Distribuidora Libros"
+        );
+
+        productoDTO_ej2 = new ProductoDTO(
+            5L, "Clean Code", "Robert C. Martin", "Prentice Hall", "Programación", 2008, 30000.0, 3,
+            "978-013-23-5088-4", "desc", 1L, "Distribuidora Libros"
+        );
+    }
+
     @Test
     void findAllTest(){
         //lista de registros de inventario
@@ -45,14 +62,8 @@ public class InventarioServiceTest {
         when(inventarioRepository.findAll()).thenReturn(List.of(esperado1, esperado2));
         
         //supuestos datos obtenidos desde LMCatalogoMS al efectuar .findAll() desde el repositorio
-        when(toAPICatalogFeign.obtener(3L)).thenReturn(new ProductoDTO(
-            3L, "Java for Dummies", "Terry A. Burd", "Wiley", "Programación", 2022, 26725.0, 5,
-            "978-111-98-6164-5", "desc", 1L, "Distribuidora Libros"
-        ));
-        when(toAPICatalogFeign.obtener(5L)).thenReturn(new ProductoDTO(
-            5L, "Clean Code", "Robert C. Martin", "Prentice Hall", "Programación", 2008, 30000.0, 3,
-            "978-013-23-5088-4", "desc", 1L, "Distribuidora Libros"
-        ));
+        when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO_ej1);
+        when(toAPICatalogFeign.obtener(5L)).thenReturn(productoDTO_ej2);
 
         List<InventarioResponseDTO> resultados = inventarioService.findAll();
 
@@ -72,10 +83,7 @@ public class InventarioServiceTest {
         when(inventarioRepository.findById(id)).thenReturn(esperado);
         
         //supuestos datos obtenidos desde LMCatalogoMS al efectuar .findById() desde el repositorio
-        when(toAPICatalogFeign.obtener(3L)).thenReturn(new ProductoDTO(
-            3L, "Java for Dummies", "Terry A. Burd", "Wiley", "Programación", 2022, 26725.0, 5,
-            "978-111-98-6164-5", "desc", 1L, "Distribuidora Libros"
-        ));
+        when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO_ej1);
 
         InventarioResponseDTO resultado = inventarioService.findById(id);
 
@@ -97,10 +105,7 @@ public class InventarioServiceTest {
         when(inventarioRepository.findByProductoId(productoId)).thenReturn(esperado);
         
         //supuestos datos obtenidos desde LMCatalogoMS al efectuar .findById() desde el repositorio
-        when(toAPICatalogFeign.obtener(3L)).thenReturn(new ProductoDTO(
-            3L, "Java for Dummies", "Terry A. Burd", "Wiley", "Programación", 2022, 26725.0, 5,
-            "978-111-98-6164-5", "desc", 1L, "Distribuidora Libros"
-        ));
+        when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO_ej1);
 
         InventarioResponseDTO resultado = inventarioService.findByProductoId(productoId);
 
@@ -118,12 +123,8 @@ public class InventarioServiceTest {
         //se corrobora lo que llegó al .save() sea el updateDTO, invocando su argumento 
         when(inventarioRepository.save(any(Inventario.class))).thenAnswer(invocacion -> invocacion.getArgument(0));
 
-        ProductoDTO productoDTO = new ProductoDTO(
-            3L, "Java for Dummies", "Terry A. Burd", "Wiley", "Programación", 2022, 26725.0, 5,
-            "978-111-98-6164-5", "desc", 1L, "Distribuidora Libros"
-        );
 
-        when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO);
+        when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO_ej1);
 
         InventarioResponseDTO resultado = inventarioService.update(invUpdate);
 
@@ -135,14 +136,10 @@ public class InventarioServiceTest {
 
     @Test
     void saveTest(){
-        ProductoDTO productoDTO = new ProductoDTO(
-            3L, "Java for Dummies", "Terry A. Burd", "Wiley", "Programación", 2022, 26725.0, 5,
-            "978-111-98-6164-5", "desc", 1L, "Distribuidora Libros"
-        );
-
-        when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO);
+        when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO_ej1);
 
         when(inventarioRepository.save(any(Inventario.class))).thenAnswer(invocacion -> invocacion.getArgument(0));
+        when(inventarioRepository.existsByProductoId(3L)).thenReturn(false);
 
         InventarioInputDTO invInput = new InventarioInputDTO(3L, 20, true);
 
