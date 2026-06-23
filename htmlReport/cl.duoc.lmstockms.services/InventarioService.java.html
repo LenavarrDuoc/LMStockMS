@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InventarioService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jacoco.exec</a> &gt; <a href="index.source.html" class="el_package">cl.duoc.lmstockms.services</a> &gt; <span class="el_source">InventarioService.java</span></div><h1>InventarioService.java</h1><pre class="source lang-java linenums">package cl.duoc.lmstockms.services;
+
+import cl.duoc.lmstockms.clients.ToAPICatalogFeign;
+import cl.duoc.lmstockms.dtos.InventarioInputDTO;
+import cl.duoc.lmstockms.dtos.InventarioResponseDTO;
+import cl.duoc.lmstockms.dtos.InventarioUpdateDTO;
+import cl.duoc.lmstockms.exceptions.IdExisteException;
+import cl.duoc.lmstockms.exceptions.IdNoExisteException;
+import cl.duoc.lmstockms.mappers.InventarioInputMapper;
+import cl.duoc.lmstockms.mappers.InventarioResponseMapper;
+import cl.duoc.lmstockms.mappers.InventarioUpdateMapper;
+import cl.duoc.lmstockms.models.Inventario;
+import cl.duoc.lmstockms.repositories.InventarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+<span class="fc" id="L21">public class InventarioService {</span>
+    @Autowired
+    private InventarioRepository inventarioRepository;
+
+    @Autowired
+    private InventarioInputMapper inventarioInputMapper;
+
+    @Autowired
+    private InventarioResponseMapper inventarioResponseMapper;
+
+    @Autowired
+    private InventarioUpdateMapper inventarioUpdateMapper;
+
+    @Autowired
+    ToAPICatalogFeign toAPICatalogFeign;
+
+    //CREATE:
+    @Transactional
+    public InventarioResponseDTO save(InventarioInputDTO dto) {
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (inventarioRepository.existsByProductoId(dto.getProductoId())) {</span>
+<span class="fc" id="L41">            throw new IdExisteException(&quot;Producto ya registrado.&quot;);</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        } else if (toAPICatalogFeign.obtener(dto.getProductoId()) == null) {</span>
+<span class="fc" id="L43">            throw new IdNoExisteException(&quot;ID de producto no existe.&quot;);</span>
+        }
+
+<span class="fc" id="L46">        return inventarioResponseMapper.toDto(inventarioRepository.save(inventarioInputMapper.toEntity(dto)));</span>
+
+    }
+
+    //READ:
+    @Transactional(readOnly = true)
+    public List&lt;InventarioResponseDTO&gt; findAll() {
+<span class="fc" id="L53">        return inventarioRepository.findAll().stream().map(inventarioResponseMapper::toDto).toList();</span>
+    }
+
+    @Transactional(readOnly = true)
+    public InventarioResponseDTO findById(Long id) {
+<span class="fc" id="L58">        return inventarioResponseMapper.toDto(inventarioRepository.findById(id).orElseThrow(() -&gt; new IdNoExisteException(&quot;ID de registro no existe.&quot;)));</span>
+    }
+
+    @Transactional(readOnly = true)
+    public Boolean existsById(Long id) {
+<span class="fc" id="L63">        return inventarioRepository.existsById(id);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public InventarioResponseDTO findByProductoId(Long id) {
+<span class="fc" id="L68">        Inventario ent = inventarioRepository.findByProductoId(id);</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (ent == null) {</span>
+<span class="fc" id="L70">            throw new IdNoExisteException(&quot;ID de producto no existe.&quot;);</span>
+        }
+<span class="fc" id="L72">        return inventarioResponseMapper.toDto(ent);</span>
+    }
+
+    //UPDATE:
+    @Transactional
+    public InventarioResponseDTO update(InventarioUpdateDTO dto) {
+<span class="fc" id="L78">        Inventario ent = inventarioRepository.findById(dto.getId()).orElseThrow(() -&gt; new IdNoExisteException(&quot;ID de registro no existe.&quot;));</span>
+<span class="fc" id="L79">        return inventarioResponseMapper.toDto(inventarioRepository.save(inventarioUpdateMapper.toEntity(ent, dto)));</span>
+    }
+
+    //Delete:
+    @Transactional
+    public Boolean deleteById(Long id) {
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        if (inventarioRepository.existsById(id)) {</span>
+<span class="fc" id="L86">            inventarioRepository.deleteById(id);</span>
+<span class="fc" id="L87">            return true;</span>
+        } else {
+<span class="fc" id="L89">            throw new IdNoExisteException(&quot;ID de registro no existe.&quot;);</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

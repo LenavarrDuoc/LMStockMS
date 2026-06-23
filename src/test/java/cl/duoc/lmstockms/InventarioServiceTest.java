@@ -1,17 +1,15 @@
 package cl.duoc.lmstockms;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Optional;
 
+import cl.duoc.lmstockms.exceptions.IdExisteException;
+import cl.duoc.lmstockms.exceptions.IdNoExisteException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -89,6 +87,23 @@ public class InventarioServiceTest {
 
         assertEquals(esperado.get().getId(), resultado.getId());
         assertNotNull(resultado);
+
+        verify(inventarioRepository).findById(id);
+        verify(toAPICatalogFeign).obtener(3L);
+    }
+
+    @Test
+    void findByIdExceptionIdNoExisteTest(){
+        when(inventarioRepository.findById(3L)).thenReturn(Optional.empty());
+
+        IdNoExisteException exception = assertThrows(IdNoExisteException.class, () -> inventarioService.findById(3L));
+
+        String expectedMessage = "ID de registro no existe.";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
+        verify(inventarioRepository).findById(3L);
     }
 
     @Test
@@ -96,6 +111,8 @@ public class InventarioServiceTest {
         when(inventarioRepository.existsById(1L)).thenReturn(true);
         boolean resultado = inventarioService.existsById(1L);
         assertTrue(resultado);
+
+        verify(inventarioRepository).existsById(1L);
     }
 
     @Test
@@ -105,12 +122,28 @@ public class InventarioServiceTest {
         when(inventarioRepository.findByProductoId(productoId)).thenReturn(esperado);
         
         //supuestos datos obtenidos desde LMCatalogoMS al efectuar .findById() desde el repositorio
-        when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO_ej1);
+        when(toAPICatalogFeign.obtener(productoId)).thenReturn(productoDTO_ej1);
 
         InventarioResponseDTO resultado = inventarioService.findByProductoId(productoId);
 
         assertEquals(esperado.getProductoId(), resultado.getProductoId());
         assertNotNull(resultado);
+
+        verify(inventarioRepository).findByProductoId(productoId);
+        verify(toAPICatalogFeign).obtener(productoId);
+    }
+
+    @Test
+    void findByProductoIdExceptionIdNoExisteTest(){
+        when(inventarioRepository.findByProductoId(3L)).thenReturn(null);
+        IdNoExisteException exception = assertThrows(IdNoExisteException.class, () -> inventarioService.findByProductoId(3L));
+
+        String expectedMessage = "ID de producto no existe.";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
+        verify(inventarioRepository).findByProductoId(3L);
     }
 
     @Test
@@ -123,7 +156,6 @@ public class InventarioServiceTest {
         //se corrobora lo que llegó al .save() sea el updateDTO, invocando su argumento 
         when(inventarioRepository.save(any(Inventario.class))).thenAnswer(invocacion -> invocacion.getArgument(0));
 
-
         when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO_ej1);
 
         InventarioResponseDTO resultado = inventarioService.update(invUpdate);
@@ -132,12 +164,30 @@ public class InventarioServiceTest {
         assertEquals(15, resultado.getCantidad());
         assertEquals(false, resultado.getEstado());
         assertEquals(3L, resultado.getProductoId());
+
+        verify(inventarioRepository).findById(inventario.getId());
+        verify(inventarioRepository).save(any(Inventario.class));
+        verify(toAPICatalogFeign).obtener(3L);
+    }
+
+    @Test
+    void updateExceptionIdNoExisteTest(){
+        when(inventarioRepository.findById(1L)).thenReturn(Optional.empty());
+        InventarioUpdateDTO invUpdate = new InventarioUpdateDTO(1L, 3L, 15, false);
+
+        IdNoExisteException exception = assertThrows(IdNoExisteException.class, () -> inventarioService.update(invUpdate));
+
+        String expectedMessage = "ID de registro no existe.";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
+        verify(inventarioRepository, never()).save(any(Inventario.class));
     }
 
     @Test
     void saveTest(){
         when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO_ej1);
-
         when(inventarioRepository.save(any(Inventario.class))).thenAnswer(invocacion -> invocacion.getArgument(0));
         when(inventarioRepository.existsByProductoId(3L)).thenReturn(false);
 
@@ -147,5 +197,67 @@ public class InventarioServiceTest {
 
         assertNotNull(resultado);
         assertEquals(invInput.getProductoId(), resultado.getProductoId());
+
+        verify(toAPICatalogFeign, times(2)).obtener(3L);
+        verify(inventarioRepository).save(any(Inventario.class));
+        verify(inventarioRepository).existsByProductoId(3L);
     }
+
+    @Test
+    void saveExceptionProductoYaRegistradoTest(){
+        Inventario registro = new Inventario(1L, 3L, 20, true);
+        when(inventarioRepository.existsByProductoId(registro.getProductoId())).thenReturn(true);
+
+        InventarioInputDTO invInput = new InventarioInputDTO(3L, 20, true);
+        IdExisteException exception = assertThrows(IdExisteException.class, () -> inventarioService.save(invInput));
+
+        String expectedMessage = "Producto ya registrado.";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
+        verify(inventarioRepository).existsByProductoId(registro.getProductoId());
+        verify(inventarioRepository, never()).save(any(Inventario.class));
+    }
+
+    @Test
+    void saveExceptionProductoNoExisteTest(){
+        when(toAPICatalogFeign.obtener(3L)).thenReturn(null);
+
+        InventarioInputDTO invInput = new InventarioInputDTO(3L, 20, true);
+        IdNoExisteException exception = assertThrows(IdNoExisteException.class, () -> inventarioService.save(invInput));
+
+        String expectedMessage = "ID de producto no existe.";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
+        verify(inventarioRepository).existsByProductoId(3L);
+        verify(toAPICatalogFeign).obtener(3L);
+        verify(inventarioRepository, never()).save(any(Inventario.class));
+    }
+
+    @Test
+    void deleteTest(){
+        when(inventarioRepository.existsById(3L)).thenReturn(true);
+        boolean resultado = inventarioService.deleteById(3L);
+        assertTrue(resultado);
+        verify(inventarioRepository).existsById(3L);
+        verify(inventarioRepository).deleteById(3L);
+    }
+
+    @Test
+    void deleteExceptionIdNoExisteTest(){
+        when(inventarioRepository.existsById(3L)).thenReturn(false);
+        IdNoExisteException exception = assertThrows(IdNoExisteException.class, () -> inventarioService.deleteById(3L));
+
+        String expectedMessage = "ID de registro no existe.";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
+        verify(inventarioRepository).existsById(3L);
+        verify(inventarioRepository, never()).deleteById(3L);
+    }
+
 }

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jacoco.exec</a> &gt; <a href="index.source.html" class="el_package">cl.duoc.lmstockms.exceptions</a> &gt; <span class="el_source">GlobalExceptionHandler.java</span></div><h1>GlobalExceptionHandler.java</h1><pre class="source lang-java linenums">package cl.duoc.lmstockms.exceptions;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@RestControllerAdvice
+<span class="fc" id="L16">public class GlobalExceptionHandler {</span>
+<span class="fc" id="L17">    String title1 = &quot;Error validación de datos.&quot;; //para HTTP 400</span>
+<span class="fc" id="L18">    String title2 = &quot;Conflicto de datos.&quot;; //para HTTP 409</span>
+<span class="fc" id="L19">    String title3 = &quot;Objeto no encontrado&quot;; //para HTTP 404</span>
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ProblemDetail handlerValidation(MethodArgumentNotValidException exception){
+<span class="nc" id="L23">        ProblemDetail problemDetail = ProblemDetail.forStatus(400);</span>
+<span class="nc" id="L24">        problemDetail.setTitle(title1);</span>
+
+<span class="nc" id="L26">        var errors = exception.getBindingResult().getFieldErrors().stream().collect(Collectors.toMap(error -&gt; error.getField(), error -&gt; error.getDefaultMessage(), (String existing, String replacement) -&gt; existing));</span>
+
+<span class="nc" id="L28">        problemDetail.setProperty(&quot;Parámetro no válido&quot;, errors);</span>
+<span class="nc" id="L29">        return problemDetail;</span>
+    }
+
+    @ExceptionHandler(IdExisteException.class)
+    public ProblemDetail handlerNoExisteID(IdExisteException exception){
+<span class="nc" id="L34">        ProblemDetail problemDetail = ProblemDetail.forStatus(409); //HTTP 409 = conlficto de datos</span>
+<span class="nc" id="L35">        problemDetail.setTitle(title2);</span>
+<span class="nc" id="L36">        problemDetail.setDetail(exception.getMessage());</span>
+<span class="nc" id="L37">        return problemDetail;</span>
+    }
+
+    @ExceptionHandler(IdNoExisteException.class)
+    public ProblemDetail handlerNoExisteID(IdNoExisteException exception){
+<span class="nc" id="L42">        ProblemDetail problemDetail = ProblemDetail.forStatus(404); //HTTP 404 = no encontrado</span>
+<span class="nc" id="L43">        problemDetail.setTitle(title3);</span>
+<span class="nc" id="L44">        problemDetail.setDetail(exception.getMessage());</span>
+<span class="nc" id="L45">        return problemDetail;</span>
+    }
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleRuntimeException(RuntimeException ex) {
+<span class="nc" id="L49">        Map&lt;String, Object&gt; respuesta = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L50">        respuesta.put(&quot;timestamp&quot;, LocalDateTime.now().toString());</span>
+<span class="nc" id="L51">        respuesta.put(&quot;status&quot;, 500);</span>
+<span class="nc" id="L52">        respuesta.put(&quot;error&quot;, ex.getMessage());</span>
+
+         // Pasa 'ex' para ver el StackTrace completo en logs
+<span class="nc" id="L55">        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuesta);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

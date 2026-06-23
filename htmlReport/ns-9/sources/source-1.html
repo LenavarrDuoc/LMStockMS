@@ -1,0 +1,90 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > InventarioRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cl.duoc.lmstockms.repositories</a>
+</div>
+
+<h1>Coverage Summary for Class: InventarioRepository (cl.duoc.lmstockms.repositories)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">InventarioRepository$MockitoMock$JYmnQ5qQ</td>
+  </tr>
+  <tr>
+    <td class="name">InventarioRepository$MockitoMock$JYmnQ5qQ$auxiliary$I8DjY3A4</td>
+  </tr>
+  <tr>
+    <td class="name">InventarioRepository$MockitoMock$JYmnQ5qQ$auxiliary$RNrUy4Jc</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cl.duoc.lmstockms.repositories;
+&nbsp;
+&nbsp;import cl.duoc.lmstockms.models.Inventario;
+&nbsp;import jakarta.validation.constraints.PositiveOrZero;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import org.springframework.stereotype.Repository;
+&nbsp;
+&nbsp;@Repository
+&nbsp;public interface InventarioRepository extends JpaRepository&lt;Inventario, Long&gt; {
+&nbsp;    boolean existsByProductoId(@PositiveOrZero Long productoId);
+&nbsp;
+&nbsp;    Inventario findByProductoId(Long id);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-06-23 14:49</div>
+</div>
+</body>
+</html>

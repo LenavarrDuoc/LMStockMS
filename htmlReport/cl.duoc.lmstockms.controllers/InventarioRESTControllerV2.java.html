@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InventarioRESTControllerV2.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jacoco.exec</a> &gt; <a href="index.source.html" class="el_package">cl.duoc.lmstockms.controllers</a> &gt; <span class="el_source">InventarioRESTControllerV2.java</span></div><h1>InventarioRESTControllerV2.java</h1><pre class="source lang-java linenums">package cl.duoc.lmstockms.controllers;
+
+import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import cl.duoc.lmstockms.assemblers.InventarioModelAssembler;
+import cl.duoc.lmstockms.dtos.InventarioInputDTO;
+import cl.duoc.lmstockms.dtos.InventarioResponseDTO;
+import cl.duoc.lmstockms.dtos.InventarioUpdateDTO;
+import cl.duoc.lmstockms.services.InventarioService;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
+@RestController
+@RequestMapping(&quot;/api/v2/inventarios&quot;)
+@Tag(name = &quot;Stock v2&quot;, description = &quot;Gestion de inventario&quot;)
+<span class="fc" id="L42">public class InventarioRESTControllerV2 {</span>
+    
+    //TO DO: ADAPTAR LOGS A CONTEXTO HATEOAS
+<span class="fc" id="L45">    private static final Logger logger = LoggerFactory.getLogger(InventarioRESTControllerV2.class.getName());</span>
+
+    @Autowired
+    private InventarioService inventarioService;
+
+    @Autowired
+    private InventarioModelAssembler assembler;
+
+    //CREATE:
+    @ApiResponses( value = {
+            @ApiResponse(
+                    responseCode = &quot;201&quot;,
+                    description = &quot;Se ha creado registro&quot;,
+                    content = @Content(
+                            mediaType = &quot;application/json&quot;,
+                            schema = @Schema(implementation = InventarioResponseDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = &quot;400&quot;,
+                    description = &quot;Sintáxis incorrecta&quot;,
+                    content = @Content(schema = @Schema(hidden = true))
+            ),
+            @ApiResponse(
+                    responseCode = &quot;409&quot;,
+                    description = &quot;Conflicto al hacer solicitud (ej: productoId ya existe)&quot;,
+                    content = @Content(schema = @Schema(hidden = true))
+            )
+        }
+    )
+    @PostMapping(produces = MediaTypes.HAL_JSON_VALUE)
+    public ResponseEntity&lt;EntityModel&lt;InventarioResponseDTO&gt;&gt; save(@Valid @RequestBody InventarioInputDTO dto){
+<span class="nc" id="L77">        String logMsgRequest = &quot;Recibiendo solicitud para crear/guardar inventario.&quot;;</span>
+<span class="nc" id="L78">        String logMsg = &quot;Solicitud para crear/guardar inventario.&quot;;</span>
+<span class="nc" id="L79">        logger.info(logMsgRequest);</span>
+
+<span class="nc" id="L81">        InventarioResponseDTO created = inventarioService.save(dto);</span>
+
+<span class="nc" id="L83">        URI location = linkTo(methodOn(InventarioRESTControllerV2.class).findById(created.getId())).toUri();</span>
+        //de componentes de constructor URI // de la actual request //ruta de id // sacar la id del obj creado // transformar a URI.
+        
+<span class="nc" id="L86">        logger.info(logMsg + &quot;=&gt; creado con ID Inventario: {}, ID Producto: {}, Cantidad: {}, Estado: {}.&quot;, created.getId(),</span>
+<span class="nc" id="L87">                                                                                                            created.getProductoId(), </span>
+<span class="nc" id="L88">                                                                                                            created.getCantidad(), </span>
+<span class="nc" id="L89">                                                                                                            created.getEstado());</span>
+                                                                                                            
+<span class="nc" id="L91">        return ResponseEntity.created(location).body(assembler.toModel(created));</span>
+    }
+
+    //READ:
+    @ApiResponses( value = {
+            @ApiResponse(
+                    responseCode = &quot;200&quot;,
+                    description = &quot;Se han encontrado registros&quot;,
+                    content = @Content(
+                            mediaType = &quot;application/json&quot;,
+                            array = @ArraySchema(schema = @Schema(implementation = InventarioResponseDTO.class))
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = &quot;400&quot;,
+                    description = &quot;Sintáxis incorrecta&quot;,
+                    content = @Content(schema = @Schema(hidden = true))
+            ),
+            @ApiResponse(
+                    responseCode = &quot;404&quot;,
+                    description = &quot;No se han encontrado registros&quot;,
+                    content = @Content(schema = @Schema(hidden = true))
+            )
+        }
+    )
+    @GetMapping(produces = MediaTypes.HAL_JSON_VALUE)
+    public ResponseEntity&lt;CollectionModel&lt;EntityModel&lt;InventarioResponseDTO&gt;&gt;&gt; findAll(){
+<span class="nc" id="L118">        String logMsgRequest = &quot;HATEOAS Recibiendo solicitud para buscar listado de inventarios.&quot;;</span>
+<span class="nc" id="L119">        String logMsg = &quot;Solicitud para buscar listado de inventarios.&quot;;</span>
+<span class="nc" id="L120">        logger.info(logMsgRequest);</span>
+<span class="nc" id="L121">        List&lt;EntityModel&lt;InventarioResponseDTO&gt;&gt; listadoDTO = inventarioService.findAll().stream()</span>
+<span class="nc" id="L122">                                                                                        .map(assembler::toModel)</span>
+<span class="nc" id="L123">                                                                                        .collect(Collectors.toList());;</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        if (!listadoDTO.isEmpty()){</span>
+<span class="nc" id="L125">            logger.info(logMsg + &quot;=&gt; encontrado(s) y enlistado(s).&quot;);</span>
+<span class="nc" id="L126">            return ResponseEntity.ok(CollectionModel.of(listadoDTO,linkTo(methodOn(InventarioRESTControllerV2.class).findAll()).withSelfRel()));</span>
+        }
+<span class="nc" id="L128">        logger.info(logMsg + &quot;=&gt; sin coincidencias (vacío).&quot;);</span>
+<span class="nc" id="L129">        return ResponseEntity.noContent().build();</span>
+    }
+  
+    @ApiResponses( value = {
+            @ApiResponse(
+                    responseCode = &quot;200&quot;,
+                    description = &quot;Se ha encontrado el registro por ID&quot;,
+                    content = @Content(
+                            mediaType = &quot;application/json&quot;,
+                            schema = @Schema(implementation = InventarioResponseDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = &quot;400&quot;,
+                    description = &quot;Sintáxis incorrecta&quot;,
+                    content = @Content(schema = @Schema(hidden = true))
+            ),
+            @ApiResponse(
+                    responseCode = &quot;404&quot;,
+                    description = &quot;No se ha encontrado el registro&quot;,
+                    content = @Content(schema = @Schema(hidden = true))
+            )
+        }
+    )
+    @GetMapping(value = &quot;/{id}&quot;, produces = MediaTypes.HAL_JSON_VALUE)
+    public ResponseEntity&lt;EntityModel&lt;InventarioResponseDTO&gt;&gt; findById(@PathVariable Long id){
+<span class="nc" id="L155">        String logMsgRequest = &quot;Recibiendo solicitud para buscar inventario por ID: &quot; + id + &quot;.&quot;;</span>
+<span class="nc" id="L156">        String logMsg = &quot;Solicitud para buscar inventario por ID: &quot; + id + &quot;.&quot;;</span>
+<span class="nc" id="L157">        logger.info(logMsgRequest);</span>
+<span class="nc" id="L158">        InventarioResponseDTO dto = inventarioService.findById(id);</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        if (dto != null){</span>
+<span class="nc" id="L160">            logger.info(logMsg + &quot;=&gt; encontrado.&quot;);</span>
+<span class="nc" id="L161">            return ResponseEntity.ok(assembler.toModel(dto));</span>
+        }
+<span class="nc" id="L163">        logger.info(logMsg + &quot;=&gt; no encontrado.&quot;);</span>
+<span class="nc" id="L164">        return ResponseEntity.notFound().build();</span>
+    }
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = &quot;200&quot;,
+                    description = &quot;Se ha encontrado registro por ID de producto&quot;,
+                    content = @Content(
+                            mediaType = &quot;application/json&quot;,
+                            schema = @Schema(implementation = InventarioResponseDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = &quot;400&quot;,
+                    description = &quot;Sintáxis incorrecta&quot;,
+                    content = @Content(schema = @Schema(hidden = true))
+            ),
+            @ApiResponse(
+                    responseCode = &quot;404&quot;,
+                    description = &quot;No se ha encontrado registro&quot;,
+                    content = @Content(schema = @Schema(hidden = true))
+            )
+        }
+    )
+    @GetMapping(value = &quot;/by-id-producto/{productoId}&quot;, produces = MediaTypes.HAL_JSON_VALUE)
+    public ResponseEntity&lt;EntityModel&lt;InventarioResponseDTO&gt;&gt; findByProductoId(@PathVariable Long productoId){
+<span class="nc" id="L189">        String logMsgRequest = &quot;Recibiendo solicitud para buscar inventario por ID: &quot; + productoId + &quot;.&quot;;</span>
+<span class="nc" id="L190">        String logMsg = &quot;Solicitud para buscar inventario por ID: &quot; + productoId + &quot;.&quot;;</span>
+<span class="nc" id="L191">        logger.info(logMsgRequest);</span>
+<span class="nc" id="L192">        InventarioResponseDTO dto = inventarioService.findByProductoId(productoId);</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">        if (dto != null){</span>
+<span class="nc" id="L194">            logger.info(logMsg + &quot;=&gt; encontrado con ID:{}&quot;, dto.getId() + &quot;.&quot;);</span>
+<span class="nc" id="L195">            return ResponseEntity.ok(assembler.toModel(dto));</span>
+        }
+<span class="nc" id="L197">        logger.info(logMsg + &quot;=&gt; no encontrado.&quot;);</span>
+<span class="nc" id="L198">        return ResponseEntity.notFound().build();</span>
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = &quot;200&quot;,
+                    description = &quot;Se ha actualizado el registro&quot;,
+                    content = @Content(
+                            mediaType = &quot;application/json&quot;,
+                            schema = @Schema(implementation = InventarioResponseDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = &quot;400&quot;,
+                    description = &quot;Sintáxis incorrecta&quot;,
+                    content = @Content(schema = @Schema(hidden = true))
+            ),
+            @ApiResponse(
+                    responseCode = &quot;404&quot;,
+                    description = &quot;No se han encontrado registros&quot;,
+                    content = @Content(schema = @Schema(hidden = true))
+            )
+        }
+    )
+    //UPDATE:
+    @PutMapping(value = &quot;/{id}&quot;, produces = MediaTypes.HAL_JSON_VALUE)
+    public ResponseEntity&lt;EntityModel&lt;InventarioResponseDTO&gt;&gt; update(@Valid @RequestBody InventarioUpdateDTO ent, @PathVariable Long id){
+<span class="nc" id="L225">        String logMsgRequest = &quot;Recibiendo solicitud para actualizar inventario con ID: &quot; + id + &quot;.&quot;;</span>
+<span class="nc" id="L226">        String logMsg = &quot;Solicitud para actualizar inventario con ID: &quot; + id + &quot;.&quot;;</span>
+<span class="nc" id="L227">        logger.info(logMsgRequest);</span>
+        
+<span class="nc" id="L229">        ent.setId(id);</span>
+        
+<span class="nc" id="L231">        InventarioResponseDTO updated = inventarioService.update(ent);</span>
+
+<span class="nc" id="L233">        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path(&quot;/{id}&quot;).buildAndExpand(updated.getId()).toUri();</span>
+        //de componentes de constructor URI // de la actual request //ruta de id // sacar la id del obj creado // transformar a URI.
+
+<span class="nc" id="L236">        logger.info(logMsg + &quot; =&gt; actualizado.&quot;);</span>
+<span class="nc" id="L237">        return ResponseEntity.status(200).location(location).body(assembler.toModel(updated));</span>
+        //devuelve el estado y la locación //devuelve el objeto creado
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = &quot;204&quot;,
+                    description = &quot;Se ha eliminado el registro&quot;,
+                    content = @Content(
+                            mediaType = &quot;application/json&quot;,
+                            schema = @Schema(implementation = InventarioResponseDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = &quot;400&quot;,
+                    description = &quot;Sintáxis incorrecta&quot;,
+                    content = @Content(schema = @Schema(hidden = true))
+            ),
+            @ApiResponse(
+                    responseCode = &quot;404&quot;,
+                    description = &quot;No se ha encontrado el registro&quot;,
+                    content = @Content(schema = @Schema(hidden = true))
+            )
+            
+        }
+    )
+    //DELETE:
+    @DeleteMapping(value = &quot;/{id}&quot;, produces = MediaTypes.HAL_JSON_VALUE)
+    public ResponseEntity&lt;Void&gt; deleteById(@PathVariable Long id){
+<span class="nc" id="L266">        String logMsgRequest = &quot;Recibiendo solicitud para borrar inventario con ID: &quot; + id + &quot;.&quot;;</span>
+<span class="nc" id="L267">        String logMsg = &quot;Solicitud para borrar inventario con ID: &quot; + id + &quot;.&quot;;</span>
+<span class="nc" id="L268">        logger.info(logMsgRequest);</span>
+<span class="nc bnc" id="L269" title="All 2 branches missed.">        if(inventarioService.deleteById(id)){</span>
+<span class="nc" id="L270">            logger.info(logMsg + &quot; =&gt; encontrado y borrado.&quot;);</span>
+<span class="nc" id="L271">            return ResponseEntity.noContent().build();</span>
+        }
+<span class="nc" id="L273">        logger.info(logMsg + &quot; =&gt; no encontrado.&quot;);</span>
+<span class="nc" id="L274">        return ResponseEntity.notFound().build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

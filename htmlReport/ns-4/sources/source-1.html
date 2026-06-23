@@ -1,0 +1,373 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > InventarioRESTController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cl.duoc.lmstockms.controllers</a>
+</div>
+
+<h1>Coverage Summary for Class: InventarioRESTController (cl.duoc.lmstockms.controllers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InventarioRESTController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (2/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    3.8%
+  </span>
+  <span class="absValue">
+    (2/52)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cl.duoc.lmstockms.controllers;
+&nbsp;
+&nbsp;import cl.duoc.lmstockms.dtos.InventarioInputDTO;
+&nbsp;import cl.duoc.lmstockms.dtos.InventarioResponseDTO;
+&nbsp;import cl.duoc.lmstockms.dtos.InventarioUpdateDTO;
+&nbsp;import cl.duoc.lmstockms.services.InventarioService;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.Parameter;
+&nbsp;import io.swagger.v3.oas.annotations.media.ArraySchema;
+&nbsp;import io.swagger.v3.oas.annotations.media.Content;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponses;
+&nbsp;import io.swagger.v3.oas.annotations.tags.Tag;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+&nbsp;
+&nbsp;import java.net.URI;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/api/v1/inventarios&quot;)
+&nbsp;@Tag(name = &quot;Stock&quot;, description = &quot;Gestion de inventario&quot;)
+<b class="fc">&nbsp;public class InventarioRESTController {</b>
+&nbsp;
+<b class="fc">&nbsp;    private static final Logger logger = LoggerFactory.getLogger(InventarioRESTController.class.getName());</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private InventarioService inventarioService;
+&nbsp;
+&nbsp;    //CREATE:
+&nbsp;    @ApiResponses( value = {
+&nbsp;            @ApiResponse(
+&nbsp;                    responseCode = &quot;201&quot;,
+&nbsp;                    description = &quot;Se ha creado registro&quot;,
+&nbsp;                    content = @Content(
+&nbsp;                            mediaType = &quot;application/json&quot;,
+&nbsp;                            schema = @Schema(implementation = InventarioResponseDTO.class)
+&nbsp;                    )
+&nbsp;            ),
+&nbsp;            @ApiResponse(
+&nbsp;                    responseCode = &quot;400&quot;,
+&nbsp;                    description = &quot;Sintáxis incorrecta&quot;,
+&nbsp;                    content = @Content(schema = @Schema(hidden = true))
+&nbsp;            ),
+&nbsp;            @ApiResponse(
+&nbsp;                    responseCode = &quot;409&quot;,
+&nbsp;                    description = &quot;Conflicto al hacer solicitud (ej: productoId ya existe)&quot;,
+&nbsp;                    content = @Content(schema = @Schema(hidden = true))
+&nbsp;            )
+&nbsp;        }
+&nbsp;    )
+&nbsp;    @Operation(summary = &quot;Crea inventario&quot;, description = &quot;Guarda un registro nuevo de inventario&quot;)
+&nbsp;    @PostMapping
+&nbsp;    public ResponseEntity&lt;InventarioResponseDTO&gt; save(@Valid @RequestBody InventarioInputDTO dto){
+<b class="nc">&nbsp;        String logMsgRequest = &quot;Recibiendo solicitud para crear/guardar inventario.&quot;;</b>
+<b class="nc">&nbsp;        String logMsg = &quot;Solicitud para crear/guardar inventario.&quot;;</b>
+<b class="nc">&nbsp;        logger.info(logMsgRequest);</b>
+<b class="nc">&nbsp;        InventarioResponseDTO created = inventarioService.save(dto);</b>
+<b class="nc">&nbsp;        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path(&quot;/{id}&quot;).buildAndExpand(created.getId()).toUri();</b>
+&nbsp;        //de componentes de constructor URI // de la actual request //ruta de id // sacar la id del obj creado // transformar a URI.
+<b class="nc">&nbsp;        logger.info(logMsg + &quot;=&gt; creado con ID Inventario: {}, ID Producto: {}, Cantidad: {}, Estado: {}.&quot;, created.getId(), created.getProductoId(), created.getCantidad(), created.getEstado());</b>
+<b class="nc">&nbsp;        return ResponseEntity.created(location).body(created);</b>
+&nbsp;        //devuelve el estado y la locación //devuelve el objeto creado
+&nbsp;    }
+&nbsp;
+&nbsp;    //READ:
+&nbsp;    @ApiResponses( value = {
+&nbsp;            @ApiResponse(
+&nbsp;                    responseCode = &quot;200&quot;,
+&nbsp;                    description = &quot;Se han encontrado registros&quot;,
+&nbsp;                    content = @Content(
+&nbsp;                            mediaType = &quot;application/json&quot;,
+&nbsp;                            array = @ArraySchema(schema = @Schema(implementation = InventarioResponseDTO.class))
+&nbsp;                    )
+&nbsp;            ),
+&nbsp;            @ApiResponse(
+&nbsp;                    responseCode = &quot;400&quot;,
+&nbsp;                    description = &quot;Sintáxis incorrecta&quot;,
+&nbsp;                    content = @Content(schema = @Schema(hidden = true))
+&nbsp;            ),
+&nbsp;            @ApiResponse(
+&nbsp;                    responseCode = &quot;404&quot;,
+&nbsp;                    description = &quot;No se han encontrado registros&quot;,
+&nbsp;                    content = @Content(schema = @Schema(hidden = true))
+&nbsp;            )
+&nbsp;        }
+&nbsp;    )
+&nbsp;    @GetMapping
+&nbsp;    @Operation(summary = &quot;Lista todo&quot;, description = &quot;Muestra todos los registros de inventarios&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;InventarioResponseDTO&gt;&gt; findAll(){
+<b class="nc">&nbsp;        String logMsgRequest = &quot;Recibiendo solicitud para buscar listado de inventarios.&quot;;</b>
+<b class="nc">&nbsp;        String logMsg = &quot;Solicitud para buscar listado de inventarios.&quot;;</b>
+<b class="nc">&nbsp;        logger.info(logMsgRequest);</b>
+<b class="nc">&nbsp;        List&lt;InventarioResponseDTO&gt; listadoDTO = inventarioService.findAll();</b>
+&nbsp;
+<b class="nc">&nbsp;        if (!listadoDTO.isEmpty()){</b>
+<b class="nc">&nbsp;            logger.info(logMsg + &quot;=&gt; encontrado(s) y enlistado(s).&quot;);</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(listadoDTO);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        logger.info(logMsg + &quot;=&gt; sin coincidencias (vacío).&quot;);</b>
+<b class="nc">&nbsp;        return ResponseEntity.noContent().build();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @ApiResponses( value = {
+&nbsp;            @ApiResponse(
+&nbsp;                    responseCode = &quot;200&quot;,
+&nbsp;                    description = &quot;Se ha encontrado el registro por ID&quot;,
+&nbsp;                    content = @Content(
+&nbsp;                            mediaType = &quot;application/json&quot;,
+&nbsp;                            schema = @Schema(implementation = InventarioResponseDTO.class)
+&nbsp;                    )
+&nbsp;            ),
+&nbsp;            @ApiResponse(
+&nbsp;                    responseCode = &quot;400&quot;,
+&nbsp;                    description = &quot;Sintáxis incorrecta&quot;,
+&nbsp;                    content = @Content(schema = @Schema(hidden = true))
+&nbsp;            ),
+&nbsp;            @ApiResponse(
+&nbsp;                    responseCode = &quot;404&quot;,
+&nbsp;                    description = &quot;No se ha encontrado el registro&quot;,
+&nbsp;                    content = @Content(schema = @Schema(hidden = true))
+&nbsp;            )
+&nbsp;        }
+&nbsp;    )
+&nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    @Operation(summary = &quot;Encuentra por ID&quot;, description = &quot;Trae el registro perteneciente al ID ingresado&quot;)
+&nbsp;    public ResponseEntity&lt;InventarioResponseDTO&gt; findById(@Parameter(description = &quot;ID de inventario&quot;, required = true) @PathVariable Long id){
+<b class="nc">&nbsp;        String logMsgRequest = &quot;Recibiendo solicitud para buscar inventario por ID: &quot; + id + &quot;.&quot;;</b>
+<b class="nc">&nbsp;        String logMsg = &quot;Solicitud para buscar inventario por ID: &quot; + id + &quot;.&quot;;</b>
+<b class="nc">&nbsp;        logger.info(logMsgRequest);</b>
+<b class="nc">&nbsp;        InventarioResponseDTO dto = inventarioService.findById(id);</b>
+<b class="nc">&nbsp;        if (dto != null){</b>
+<b class="nc">&nbsp;            logger.info(logMsg + &quot;=&gt; encontrado.&quot;);</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(dto);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        logger.info(logMsg + &quot;=&gt; no encontrado.&quot;);</b>
+<b class="nc">&nbsp;        return ResponseEntity.notFound().build();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(
+&nbsp;                    responseCode = &quot;200&quot;,
+&nbsp;                    description = &quot;Se ha encontrado registro por ID de producto&quot;,
+&nbsp;                    content = @Content(
+&nbsp;                            mediaType = &quot;application/json&quot;,
+&nbsp;                            schema = @Schema(implementation = InventarioResponseDTO.class)
+&nbsp;                    )
+&nbsp;            ),
+&nbsp;            @ApiResponse(
+&nbsp;                    responseCode = &quot;400&quot;,
+&nbsp;                    description = &quot;Sintáxis incorrecta&quot;,
+&nbsp;                    content = @Content(schema = @Schema(hidden = true))
+&nbsp;            ),
+&nbsp;            @ApiResponse(
+&nbsp;                    responseCode = &quot;404&quot;,
+&nbsp;                    description = &quot;No se ha encontrado registro&quot;,
+&nbsp;                    content = @Content(schema = @Schema(hidden = true))
+&nbsp;            )
+&nbsp;        }
+&nbsp;    )
+&nbsp;    @GetMapping(&quot;/by-id-producto/{productoId}&quot;)
+&nbsp;    @Operation(summary = &quot;Encuentra por ID&quot;, description = &quot;Trae el registro perteneciente a Inventarios según ID de producto&quot;)
+&nbsp;    public ResponseEntity&lt;InventarioResponseDTO&gt; findByProductoId(@Parameter(description = &quot;ID de producto&quot;, required = true) @PathVariable Long productoId){
+<b class="nc">&nbsp;        String logMsgRequest = &quot;Recibiendo solicitud para buscar inventario por ID: &quot; + productoId + &quot;.&quot;;</b>
+<b class="nc">&nbsp;        String logMsg = &quot;Solicitud para buscar inventario por ID: &quot; + productoId + &quot;.&quot;;</b>
+<b class="nc">&nbsp;        logger.info(logMsgRequest);</b>
+<b class="nc">&nbsp;        InventarioResponseDTO dto = inventarioService.findByProductoId(productoId);</b>
+<b class="nc">&nbsp;        if (dto != null){</b>
+<b class="nc">&nbsp;            logger.info(logMsg + &quot;=&gt; encontrado con ID:{}&quot;, dto.getId() + &quot;.&quot;);</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(dto);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        logger.info(logMsg + &quot;=&gt; no encontrado.&quot;);</b>
+<b class="nc">&nbsp;        return ResponseEntity.notFound().build();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(
+&nbsp;                    responseCode = &quot;200&quot;,
+&nbsp;                    description = &quot;Se ha actualizado el registro&quot;,
+&nbsp;                    content = @Content(
+&nbsp;                            mediaType = &quot;application/json&quot;,
+&nbsp;                            schema = @Schema(implementation = InventarioResponseDTO.class)
+&nbsp;                    )
+&nbsp;            ),
+&nbsp;            @ApiResponse(
+&nbsp;                    responseCode = &quot;400&quot;,
+&nbsp;                    description = &quot;Sintáxis incorrecta&quot;,
+&nbsp;                    content = @Content(schema = @Schema(hidden = true))
+&nbsp;            ),
+&nbsp;            @ApiResponse(
+&nbsp;                    responseCode = &quot;404&quot;,
+&nbsp;                    description = &quot;No se han encontrado registros&quot;,
+&nbsp;                    content = @Content(schema = @Schema(hidden = true))
+&nbsp;            )
+&nbsp;        }
+&nbsp;    )
+&nbsp;    //UPDATE:
+&nbsp;    @PutMapping(&quot;/{id}&quot;)
+&nbsp;    @Operation(summary = &quot;Actualizar por ID&quot;, description = &quot;Actualiza información de registro perteneciente al ID ingresado&quot;)
+&nbsp;    public ResponseEntity&lt;InventarioResponseDTO&gt; update(@Parameter(description = &quot;ID de inventario&quot;, required = true) @Valid @RequestBody InventarioUpdateDTO ent, @PathVariable Long id){
+<b class="nc">&nbsp;        String logMsgRequest = &quot;Recibiendo solicitud para actualizar inventario con ID: &quot; + id + &quot;.&quot;;</b>
+<b class="nc">&nbsp;        String logMsg = &quot;Solicitud para actualizar inventario con ID: &quot; + id + &quot;.&quot;;</b>
+<b class="nc">&nbsp;        logger.info(logMsgRequest);</b>
+<b class="nc">&nbsp;        ent.setId(id);</b>
+<b class="nc">&nbsp;        InventarioResponseDTO updated = inventarioService.update(ent);</b>
+<b class="nc">&nbsp;        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path(&quot;/{id}&quot;).buildAndExpand(updated.getId()).toUri();</b>
+&nbsp;        //de componentes de constructor URI // de la actual request //ruta de id // sacar la id del obj creado // transformar a URI.
+<b class="nc">&nbsp;        logger.info(logMsg + &quot; =&gt; actualizado.&quot;);</b>
+<b class="nc">&nbsp;        return ResponseEntity.status(200).location(location).body(updated);</b>
+&nbsp;        //devuelve el estado y la locación //devuelve el objeto creado
+&nbsp;    }
+&nbsp;
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(
+&nbsp;                    responseCode = &quot;204&quot;,
+&nbsp;                    description = &quot;Se ha eliminado el registro&quot;,
+&nbsp;                    content = @Content(
+&nbsp;                            mediaType = &quot;application/json&quot;,
+&nbsp;                            schema = @Schema(implementation = InventarioResponseDTO.class)
+&nbsp;                    )
+&nbsp;            ),
+&nbsp;            @ApiResponse(
+&nbsp;                    responseCode = &quot;400&quot;,
+&nbsp;                    description = &quot;Sintáxis incorrecta&quot;,
+&nbsp;                    content = @Content(schema = @Schema(hidden = true))
+&nbsp;            ),
+&nbsp;            @ApiResponse(
+&nbsp;                    responseCode = &quot;404&quot;,
+&nbsp;                    description = &quot;No se ha encontrado el registro&quot;,
+&nbsp;                    content = @Content(schema = @Schema(hidden = true))
+&nbsp;            )
+&nbsp;            
+&nbsp;        }
+&nbsp;    )
+&nbsp;    //DELETE:
+&nbsp;    @DeleteMapping(&quot;/{id}&quot;)
+&nbsp;    @Operation(summary = &quot;Eliminar por ID&quot;, description = &quot;Elimina el registro perteneciente al ID&quot;)
+&nbsp;    public ResponseEntity&lt;Void&gt; deleteById(@Parameter(description = &quot;ID de inventario&quot;, required = true) @PathVariable Long id){
+<b class="nc">&nbsp;        String logMsgRequest = &quot;Recibiendo solicitud para borrar inventario con ID: &quot; + id + &quot;.&quot;;</b>
+<b class="nc">&nbsp;        String logMsg = &quot;Solicitud para borrar inventario con ID: &quot; + id + &quot;.&quot;;</b>
+<b class="nc">&nbsp;        logger.info(logMsgRequest);</b>
+<b class="nc">&nbsp;        if(inventarioService.deleteById(id)){</b>
+<b class="nc">&nbsp;            logger.info(logMsg + &quot; =&gt; encontrado y borrado.&quot;);</b>
+<b class="nc">&nbsp;            return ResponseEntity.noContent().build();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        logger.info(logMsg + &quot; =&gt; no encontrado.&quot;);</b>
+<b class="nc">&nbsp;        return ResponseEntity.notFound().build();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-06-23 14:49</div>
+</div>
+</body>
+</html>

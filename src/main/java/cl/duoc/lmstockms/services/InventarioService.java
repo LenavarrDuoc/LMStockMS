@@ -55,7 +55,7 @@ public class InventarioService {
 
     @Transactional(readOnly = true)
     public InventarioResponseDTO findById(Long id) {
-        return inventarioResponseMapper.toDto(inventarioRepository.findById(id).orElseThrow(() -> new IdNoExisteException("ID de cliente no existe.")));
+        return inventarioResponseMapper.toDto(inventarioRepository.findById(id).orElseThrow(() -> new IdNoExisteException("ID de registro no existe.")));
     }
 
     @Transactional(readOnly = true)
@@ -75,21 +75,19 @@ public class InventarioService {
     //UPDATE:
     @Transactional
     public InventarioResponseDTO update(InventarioUpdateDTO dto) {
-        Inventario ent = inventarioRepository.findById(dto.getId()).orElseThrow(() -> new IdNoExisteException("ID de cliente no existe."));
+        Inventario ent = inventarioRepository.findById(dto.getId()).orElseThrow(() -> new IdNoExisteException("ID de registro no existe."));
         return inventarioResponseMapper.toDto(inventarioRepository.save(inventarioUpdateMapper.toEntity(ent, dto)));
     }
 
     //Delete:
     @Transactional
     public Boolean deleteById(Long id) {
-        Boolean centinela = false;
         if (inventarioRepository.existsById(id)) {
             inventarioRepository.deleteById(id);
-            centinela = true;
+            return true;
         } else {
-            throw new IdNoExisteException("ID de cliente no existe.");
+            throw new IdNoExisteException("ID de registro no existe.");
         }
-        return centinela;
     }
 
 }

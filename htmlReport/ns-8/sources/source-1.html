@@ -1,0 +1,229 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > InventarioService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cl.duoc.lmstockms.services</a>
+</div>
+
+<h1>Coverage Summary for Class: InventarioService (cl.duoc.lmstockms.services)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InventarioService</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (7/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (6/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    71.4%
+  </span>
+  <span class="absValue">
+    (15/21)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">InventarioService$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (7/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (6/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    71.4%
+  </span>
+  <span class="absValue">
+    (15/21)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cl.duoc.lmstockms.services;
+&nbsp;
+&nbsp;import cl.duoc.lmstockms.clients.ToAPICatalogFeign;
+&nbsp;import cl.duoc.lmstockms.dtos.InventarioInputDTO;
+&nbsp;import cl.duoc.lmstockms.dtos.InventarioResponseDTO;
+&nbsp;import cl.duoc.lmstockms.dtos.InventarioUpdateDTO;
+&nbsp;import cl.duoc.lmstockms.exceptions.IdExisteException;
+&nbsp;import cl.duoc.lmstockms.exceptions.IdNoExisteException;
+&nbsp;import cl.duoc.lmstockms.mappers.InventarioInputMapper;
+&nbsp;import cl.duoc.lmstockms.mappers.InventarioResponseMapper;
+&nbsp;import cl.duoc.lmstockms.mappers.InventarioUpdateMapper;
+&nbsp;import cl.duoc.lmstockms.models.Inventario;
+&nbsp;import cl.duoc.lmstockms.repositories.InventarioRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class InventarioService {</b>
+&nbsp;    @Autowired
+&nbsp;    private InventarioRepository inventarioRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private InventarioInputMapper inventarioInputMapper;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private InventarioResponseMapper inventarioResponseMapper;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private InventarioUpdateMapper inventarioUpdateMapper;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    ToAPICatalogFeign toAPICatalogFeign;
+&nbsp;
+&nbsp;    //CREATE:
+&nbsp;    @Transactional
+&nbsp;    public InventarioResponseDTO save(InventarioInputDTO dto) {
+<b class="fc">&nbsp;        if (inventarioRepository.existsByProductoId(dto.getProductoId())) {</b>
+<b class="fc">&nbsp;            throw new IdExisteException(&quot;Producto ya registrado.&quot;);</b>
+<b class="fc">&nbsp;        } else if (toAPICatalogFeign.obtener(dto.getProductoId()) == null) {</b>
+<b class="fc">&nbsp;            throw new IdNoExisteException(&quot;ID de producto no existe.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return inventarioResponseMapper.toDto(inventarioRepository.save(inventarioInputMapper.toEntity(dto)));</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    //READ:
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    public List&lt;InventarioResponseDTO&gt; findAll() {
+<b class="fc">&nbsp;        return inventarioRepository.findAll().stream().map(inventarioResponseMapper::toDto).toList();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    public InventarioResponseDTO findById(Long id) {
+<b class="fc">&nbsp;        return inventarioResponseMapper.toDto(inventarioRepository.findById(id).orElseThrow(() -&gt; new IdNoExisteException(&quot;ID de cliente no existe.&quot;)));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    public Boolean existsById(Long id) {
+<b class="fc">&nbsp;        return inventarioRepository.existsById(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    public InventarioResponseDTO findByProductoId(Long id) {
+<b class="fc">&nbsp;        Inventario ent = inventarioRepository.findByProductoId(id);</b>
+<b class="fc">&nbsp;        if (ent == null) {</b>
+<b class="fc">&nbsp;            throw new IdNoExisteException(&quot;ID de producto no existe.&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return inventarioResponseMapper.toDto(ent);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    //UPDATE:
+&nbsp;    @Transactional
+&nbsp;    public InventarioResponseDTO update(InventarioUpdateDTO dto) {
+<b class="fc">&nbsp;        Inventario ent = inventarioRepository.findById(dto.getId()).orElseThrow(() -&gt; new IdNoExisteException(&quot;ID de cliente no existe.&quot;));</b>
+<b class="fc">&nbsp;        return inventarioResponseMapper.toDto(inventarioRepository.save(inventarioUpdateMapper.toEntity(ent, dto)));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    //Delete:
+&nbsp;    @Transactional
+&nbsp;    public Boolean deleteById(Long id) {
+<b class="nc">&nbsp;        Boolean centinela = false;</b>
+<b class="nc">&nbsp;        if (inventarioRepository.existsById(id)) {</b>
+<b class="nc">&nbsp;            inventarioRepository.deleteById(id);</b>
+<b class="nc">&nbsp;            centinela = true;</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new IdNoExisteException(&quot;ID de cliente no existe.&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return centinela;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-06-23 14:49</div>
+</div>
+</body>
+</html>
