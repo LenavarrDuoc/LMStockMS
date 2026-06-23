@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-
 public class InventarioService {
     @Autowired
     private InventarioRepository inventarioRepository;
@@ -39,7 +38,7 @@ public class InventarioService {
     @Transactional
     public InventarioResponseDTO save(InventarioInputDTO dto) {
         if (inventarioRepository.existsByProductoId(dto.getProductoId())) {
-            throw new IdExisteException("ID de producto ya existe.");
+            throw new IdExisteException("Producto ya registrado.");
         } else if (toAPICatalogFeign.obtener(dto.getProductoId()) == null) {
             throw new IdNoExisteException("ID de producto no existe.");
         }

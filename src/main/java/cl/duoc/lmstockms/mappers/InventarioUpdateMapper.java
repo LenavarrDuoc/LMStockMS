@@ -11,7 +11,7 @@ public class InventarioUpdateMapper {
         if (dto!= null){
 
             ent.setId(dto.getId());
-            ent.setCantidad(dto.getCantidad());
+            ent.setProductoId(dto.getProductoId());
             ent.setCantidad(dto.getCantidad());
             ent.setEstado(dto.getEstado());
 
