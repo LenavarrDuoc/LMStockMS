@@ -44,7 +44,6 @@ public class InventarioService {
         }
 
         return inventarioResponseMapper.toDto(inventarioRepository.save(inventarioInputMapper.toEntity(dto)));
-
     }
 
     //READ:

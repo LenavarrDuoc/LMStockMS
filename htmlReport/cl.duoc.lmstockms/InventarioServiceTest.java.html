@@ -9,7 +9,6 @@ import java.util.Optional;
 
 import cl.duoc.lmstockms.exceptions.IdExisteException;
 import cl.duoc.lmstockms.exceptions.IdNoExisteException;
-import cl.duoc.lmstockms.mappers.InventarioResponseMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ import cl.duoc.lmstockms.repositories.InventarioRepository;
 import cl.duoc.lmstockms.services.InventarioService;
 
 @SpringBootTest
-<span class="fc" id="L29">public class InventarioServiceTest {</span>
+<span class="fc" id="L28">public class InventarioServiceTest {</span>
 
     @MockitoBean
     private InventarioRepository inventarioRepository;
@@ -39,229 +38,227 @@ import cl.duoc.lmstockms.services.InventarioService;
 
     private ProductoDTO productoDTO_ej1;
     private ProductoDTO productoDTO_ej2;
-    @Autowired
-    private InventarioResponseMapper inventarioResponseMapper;
 
     @BeforeEach
     void setUp(){
-<span class="fc" id="L47">        productoDTO_ej1 = new ProductoDTO(</span>
-<span class="fc" id="L48">            3L, &quot;Java for Dummies&quot;, &quot;Terry A. Burd&quot;, &quot;Wiley&quot;, &quot;Programación&quot;, 2022, 26725.0, 5,</span>
-<span class="fc" id="L49">            &quot;978-111-98-6164-5&quot;, &quot;desc&quot;, 1L, &quot;Distribuidora Libros&quot;</span>
+<span class="fc" id="L44">        productoDTO_ej1 = new ProductoDTO(</span>
+<span class="fc" id="L45">            3L, &quot;Java for Dummies&quot;, &quot;Terry A. Burd&quot;, &quot;Wiley&quot;, &quot;Programación&quot;, 2022, 26725.0, 5,</span>
+<span class="fc" id="L46">            &quot;978-111-98-6164-5&quot;, &quot;desc&quot;, 1L, &quot;Distribuidora Libros&quot;</span>
         );
 
-<span class="fc" id="L52">        productoDTO_ej2 = new ProductoDTO(</span>
-<span class="fc" id="L53">            5L, &quot;Clean Code&quot;, &quot;Robert C. Martin&quot;, &quot;Prentice Hall&quot;, &quot;Programación&quot;, 2008, 30000.0, 3,</span>
-<span class="fc" id="L54">            &quot;978-013-23-5088-4&quot;, &quot;desc&quot;, 1L, &quot;Distribuidora Libros&quot;</span>
+<span class="fc" id="L49">        productoDTO_ej2 = new ProductoDTO(</span>
+<span class="fc" id="L50">            5L, &quot;Clean Code&quot;, &quot;Robert C. Martin&quot;, &quot;Prentice Hall&quot;, &quot;Programación&quot;, 2008, 30000.0, 3,</span>
+<span class="fc" id="L51">            &quot;978-013-23-5088-4&quot;, &quot;desc&quot;, 1L, &quot;Distribuidora Libros&quot;</span>
         );
-<span class="fc" id="L56">    }</span>
+<span class="fc" id="L53">    }</span>
 
     @Test
     void findAllTest(){
         //lista de registros de inventario
-<span class="fc" id="L61">        Inventario esperado1 = new Inventario(1L, 3L, 20, true);</span>
-<span class="fc" id="L62">        Inventario esperado2 = new Inventario(2L, 5L, 10, true);</span>
-<span class="fc" id="L63">        when(inventarioRepository.findAll()).thenReturn(List.of(esperado1, esperado2));</span>
+<span class="fc" id="L58">        Inventario esperado1 = new Inventario(1L, 3L, 20, true);</span>
+<span class="fc" id="L59">        Inventario esperado2 = new Inventario(2L, 5L, 10, true);</span>
+<span class="fc" id="L60">        when(inventarioRepository.findAll()).thenReturn(List.of(esperado1, esperado2));</span>
         
         //supuestos datos obtenidos desde LMCatalogoMS al efectuar .findAll() desde el repositorio
-<span class="fc" id="L66">        when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO_ej1);</span>
-<span class="fc" id="L67">        when(toAPICatalogFeign.obtener(5L)).thenReturn(productoDTO_ej2);</span>
+<span class="fc" id="L63">        when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO_ej1);</span>
+<span class="fc" id="L64">        when(toAPICatalogFeign.obtener(5L)).thenReturn(productoDTO_ej2);</span>
 
-<span class="fc" id="L69">        List&lt;InventarioResponseDTO&gt; resultados = inventarioService.findAll();</span>
+<span class="fc" id="L66">        List&lt;InventarioResponseDTO&gt; resultados = inventarioService.findAll();</span>
 
-<span class="fc" id="L71">        assertEquals(2, resultados.size());</span>
-<span class="fc" id="L72">        assertEquals(&quot;Java for Dummies&quot;, resultados.get(0).getProductoNombre());</span>
-<span class="fc" id="L73">        assertEquals(&quot;Clean Code&quot;, resultados.get(1).getProductoNombre());</span>
+<span class="fc" id="L68">        assertEquals(2, resultados.size());</span>
+<span class="fc" id="L69">        assertEquals(&quot;Java for Dummies&quot;, resultados.get(0).getProductoNombre());</span>
+<span class="fc" id="L70">        assertEquals(&quot;Clean Code&quot;, resultados.get(1).getProductoNombre());</span>
 
-<span class="fc" id="L75">        verify(inventarioRepository).findAll();</span>
-<span class="fc" id="L76">        verify(toAPICatalogFeign).obtener(3L);</span>
-<span class="fc" id="L77">        verify(toAPICatalogFeign).obtener(5L);</span>
-<span class="fc" id="L78">    }</span>
+<span class="fc" id="L72">        verify(inventarioRepository).findAll();</span>
+<span class="fc" id="L73">        verify(toAPICatalogFeign).obtener(3L);</span>
+<span class="fc" id="L74">        verify(toAPICatalogFeign).obtener(5L);</span>
+<span class="fc" id="L75">    }</span>
 
     @Test
     void findByIdTest(){
-<span class="fc" id="L82">        Long id = 1L;</span>
-<span class="fc" id="L83">        Optional&lt;Inventario&gt; esperado = Optional.of(new Inventario(id, 3L, 20, true));</span>
-<span class="fc" id="L84">        when(inventarioRepository.findById(id)).thenReturn(esperado);</span>
+<span class="fc" id="L79">        Long id = 1L;</span>
+<span class="fc" id="L80">        Optional&lt;Inventario&gt; esperado = Optional.of(new Inventario(id, 3L, 20, true));</span>
+<span class="fc" id="L81">        when(inventarioRepository.findById(id)).thenReturn(esperado);</span>
         
         //supuestos datos obtenidos desde LMCatalogoMS al efectuar .findById() desde el repositorio
-<span class="fc" id="L87">        when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO_ej1);</span>
+<span class="fc" id="L84">        when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO_ej1);</span>
 
-<span class="fc" id="L89">        InventarioResponseDTO resultado = inventarioService.findById(id);</span>
+<span class="fc" id="L86">        InventarioResponseDTO resultado = inventarioService.findById(id);</span>
 
-<span class="fc" id="L91">        assertEquals(esperado.get().getId(), resultado.getId());</span>
-<span class="fc" id="L92">        assertNotNull(resultado);</span>
+<span class="fc" id="L88">        assertEquals(esperado.get().getId(), resultado.getId());</span>
+<span class="fc" id="L89">        assertNotNull(resultado);</span>
 
-<span class="fc" id="L94">        verify(inventarioRepository).findById(id);</span>
-<span class="fc" id="L95">        verify(toAPICatalogFeign).obtener(3L);</span>
-<span class="fc" id="L96">    }</span>
+<span class="fc" id="L91">        verify(inventarioRepository).findById(id);</span>
+<span class="fc" id="L92">        verify(toAPICatalogFeign).obtener(3L);</span>
+<span class="fc" id="L93">    }</span>
 
     @Test
     void findByIdExceptionIdNoExisteTest(){
-<span class="fc" id="L100">        when(inventarioRepository.findById(3L)).thenReturn(Optional.empty());</span>
+<span class="fc" id="L97">        when(inventarioRepository.findById(3L)).thenReturn(Optional.empty());</span>
 
-<span class="pc" id="L102">        IdNoExisteException exception = assertThrows(IdNoExisteException.class, () -&gt; inventarioService.findById(3L));</span>
+<span class="pc" id="L99">        IdNoExisteException exception = assertThrows(IdNoExisteException.class, () -&gt; inventarioService.findById(3L));</span>
 
-<span class="fc" id="L104">        String expectedMessage = &quot;ID de registro no existe.&quot;;</span>
-<span class="fc" id="L105">        String actualMessage = exception.getMessage();</span>
+<span class="fc" id="L101">        String expectedMessage = &quot;ID de registro no existe.&quot;;</span>
+<span class="fc" id="L102">        String actualMessage = exception.getMessage();</span>
 
-<span class="fc" id="L107">        assertTrue(actualMessage.contains(expectedMessage));</span>
+<span class="fc" id="L104">        assertTrue(actualMessage.contains(expectedMessage));</span>
 
-<span class="fc" id="L109">        verify(inventarioRepository).findById(3L);</span>
-<span class="fc" id="L110">    }</span>
+<span class="fc" id="L106">        verify(inventarioRepository).findById(3L);</span>
+<span class="fc" id="L107">    }</span>
 
     @Test
     void existsByIdTest(){
-<span class="fc" id="L114">        when(inventarioRepository.existsById(1L)).thenReturn(true);</span>
-<span class="fc" id="L115">        boolean resultado = inventarioService.existsById(1L);</span>
-<span class="fc" id="L116">        assertTrue(resultado);</span>
+<span class="fc" id="L111">        when(inventarioRepository.existsById(1L)).thenReturn(true);</span>
+<span class="fc" id="L112">        boolean resultado = inventarioService.existsById(1L);</span>
+<span class="fc" id="L113">        assertTrue(resultado);</span>
 
-<span class="fc" id="L118">        verify(inventarioRepository).existsById(1L);</span>
-<span class="fc" id="L119">    }</span>
+<span class="fc" id="L115">        verify(inventarioRepository).existsById(1L);</span>
+<span class="fc" id="L116">    }</span>
 
     @Test
     void findByProductoIdTest(){
-<span class="fc" id="L123">        Long productoId = 3L;</span>
-<span class="fc" id="L124">        Inventario esperado = new Inventario(1L, productoId, 20, true);</span>
-<span class="fc" id="L125">        when(inventarioRepository.findByProductoId(productoId)).thenReturn(esperado);</span>
+<span class="fc" id="L120">        Long productoId = 3L;</span>
+<span class="fc" id="L121">        Inventario esperado = new Inventario(1L, productoId, 20, true);</span>
+<span class="fc" id="L122">        when(inventarioRepository.findByProductoId(productoId)).thenReturn(esperado);</span>
         
         //supuestos datos obtenidos desde LMCatalogoMS al efectuar .findById() desde el repositorio
-<span class="fc" id="L128">        when(toAPICatalogFeign.obtener(productoId)).thenReturn(productoDTO_ej1);</span>
+<span class="fc" id="L125">        when(toAPICatalogFeign.obtener(productoId)).thenReturn(productoDTO_ej1);</span>
 
-<span class="fc" id="L130">        InventarioResponseDTO resultado = inventarioService.findByProductoId(productoId);</span>
+<span class="fc" id="L127">        InventarioResponseDTO resultado = inventarioService.findByProductoId(productoId);</span>
 
-<span class="fc" id="L132">        assertEquals(esperado.getProductoId(), resultado.getProductoId());</span>
-<span class="fc" id="L133">        assertNotNull(resultado);</span>
+<span class="fc" id="L129">        assertEquals(esperado.getProductoId(), resultado.getProductoId());</span>
+<span class="fc" id="L130">        assertNotNull(resultado);</span>
 
-<span class="fc" id="L135">        verify(inventarioRepository).findByProductoId(productoId);</span>
-<span class="fc" id="L136">        verify(toAPICatalogFeign).obtener(productoId);</span>
-<span class="fc" id="L137">    }</span>
+<span class="fc" id="L132">        verify(inventarioRepository).findByProductoId(productoId);</span>
+<span class="fc" id="L133">        verify(toAPICatalogFeign).obtener(productoId);</span>
+<span class="fc" id="L134">    }</span>
 
     @Test
     void findByProductoIdExceptionIdNoExisteTest(){
-<span class="fc" id="L141">        when(inventarioRepository.findByProductoId(3L)).thenReturn(null);</span>
-<span class="pc" id="L142">        IdNoExisteException exception = assertThrows(IdNoExisteException.class, () -&gt; inventarioService.findByProductoId(3L));</span>
+<span class="fc" id="L138">        when(inventarioRepository.findByProductoId(3L)).thenReturn(null);</span>
+<span class="pc" id="L139">        IdNoExisteException exception = assertThrows(IdNoExisteException.class, () -&gt; inventarioService.findByProductoId(3L));</span>
 
-<span class="fc" id="L144">        String expectedMessage = &quot;ID de producto no existe.&quot;;</span>
-<span class="fc" id="L145">        String actualMessage = exception.getMessage();</span>
+<span class="fc" id="L141">        String expectedMessage = &quot;ID de producto no existe.&quot;;</span>
+<span class="fc" id="L142">        String actualMessage = exception.getMessage();</span>
 
-<span class="fc" id="L147">        assertTrue(actualMessage.contains(expectedMessage));</span>
+<span class="fc" id="L144">        assertTrue(actualMessage.contains(expectedMessage));</span>
 
-<span class="fc" id="L149">        verify(inventarioRepository).findByProductoId(3L);</span>
-<span class="fc" id="L150">    }</span>
+<span class="fc" id="L146">        verify(inventarioRepository).findByProductoId(3L);</span>
+<span class="fc" id="L147">    }</span>
 
     @Test
     void updateTest(){
-<span class="fc" id="L154">        Inventario inventario = new Inventario(1L, 3L, 20, true);</span>
-<span class="fc" id="L155">        InventarioUpdateDTO invUpdate = new InventarioUpdateDTO(1L, 3L, 15, false);</span>
+<span class="fc" id="L151">        Inventario inventario = new Inventario(1L, 3L, 20, true);</span>
+<span class="fc" id="L152">        InventarioUpdateDTO invUpdate = new InventarioUpdateDTO(1L, 3L, 15, false);</span>
 
-<span class="fc" id="L157">        when(inventarioRepository.findById(inventario.getId())).thenReturn(Optional.of(inventario));</span>
+<span class="fc" id="L154">        when(inventarioRepository.findById(inventario.getId())).thenReturn(Optional.of(inventario));</span>
 
         //se corrobora lo que llegó al .save() sea el updateDTO, invocando su argumento 
-<span class="fc" id="L160">        when(inventarioRepository.save(any(Inventario.class))).thenAnswer(invocacion -&gt; invocacion.getArgument(0));</span>
+<span class="fc" id="L157">        when(inventarioRepository.save(any(Inventario.class))).thenAnswer(invocacion -&gt; invocacion.getArgument(0));</span>
 
-<span class="fc" id="L162">        when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO_ej1);</span>
+<span class="fc" id="L159">        when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO_ej1);</span>
 
-<span class="fc" id="L164">        InventarioResponseDTO resultado = inventarioService.update(invUpdate);</span>
+<span class="fc" id="L161">        InventarioResponseDTO resultado = inventarioService.update(invUpdate);</span>
 
-<span class="fc" id="L166">        assertNotNull(resultado);</span>
-<span class="fc" id="L167">        assertEquals(15, resultado.getCantidad());</span>
-<span class="fc" id="L168">        assertEquals(false, resultado.getEstado());</span>
-<span class="fc" id="L169">        assertEquals(3L, resultado.getProductoId());</span>
+<span class="fc" id="L163">        assertNotNull(resultado);</span>
+<span class="fc" id="L164">        assertEquals(15, resultado.getCantidad());</span>
+<span class="fc" id="L165">        assertEquals(false, resultado.getEstado());</span>
+<span class="fc" id="L166">        assertEquals(3L, resultado.getProductoId());</span>
 
-<span class="fc" id="L171">        verify(inventarioRepository).findById(inventario.getId());</span>
-<span class="fc" id="L172">        verify(inventarioRepository).save(any(Inventario.class));</span>
-<span class="fc" id="L173">        verify(toAPICatalogFeign).obtener(3L);</span>
-<span class="fc" id="L174">    }</span>
+<span class="fc" id="L168">        verify(inventarioRepository).findById(inventario.getId());</span>
+<span class="fc" id="L169">        verify(inventarioRepository).save(any(Inventario.class));</span>
+<span class="fc" id="L170">        verify(toAPICatalogFeign).obtener(3L);</span>
+<span class="fc" id="L171">    }</span>
 
     @Test
     void updateExceptionIdNoExisteTest(){
-<span class="fc" id="L178">        when(inventarioRepository.findById(1L)).thenReturn(Optional.empty());</span>
-<span class="fc" id="L179">        InventarioUpdateDTO invUpdate = new InventarioUpdateDTO(1L, 3L, 15, false);</span>
+<span class="fc" id="L175">        when(inventarioRepository.findById(1L)).thenReturn(Optional.empty());</span>
+<span class="fc" id="L176">        InventarioUpdateDTO invUpdate = new InventarioUpdateDTO(1L, 3L, 15, false);</span>
 
-<span class="pc" id="L181">        IdNoExisteException exception = assertThrows(IdNoExisteException.class, () -&gt; inventarioService.update(invUpdate));</span>
+<span class="pc" id="L178">        IdNoExisteException exception = assertThrows(IdNoExisteException.class, () -&gt; inventarioService.update(invUpdate));</span>
 
-<span class="fc" id="L183">        String expectedMessage = &quot;ID de registro no existe.&quot;;</span>
-<span class="fc" id="L184">        String actualMessage = exception.getMessage();</span>
+<span class="fc" id="L180">        String expectedMessage = &quot;ID de registro no existe.&quot;;</span>
+<span class="fc" id="L181">        String actualMessage = exception.getMessage();</span>
 
-<span class="fc" id="L186">        assertTrue(actualMessage.contains(expectedMessage));</span>
+<span class="fc" id="L183">        assertTrue(actualMessage.contains(expectedMessage));</span>
 
-<span class="fc" id="L188">        verify(inventarioRepository, never()).save(any(Inventario.class));</span>
-<span class="fc" id="L189">    }</span>
+<span class="fc" id="L185">        verify(inventarioRepository, never()).save(any(Inventario.class));</span>
+<span class="fc" id="L186">    }</span>
 
     @Test
     void saveTest(){
-<span class="fc" id="L193">        when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO_ej1);</span>
-<span class="fc" id="L194">        when(inventarioRepository.save(any(Inventario.class))).thenAnswer(invocacion -&gt; invocacion.getArgument(0));</span>
-<span class="fc" id="L195">        when(inventarioRepository.existsByProductoId(3L)).thenReturn(false);</span>
+<span class="fc" id="L190">        when(toAPICatalogFeign.obtener(3L)).thenReturn(productoDTO_ej1);</span>
+<span class="fc" id="L191">        when(inventarioRepository.save(any(Inventario.class))).thenAnswer(invocacion -&gt; invocacion.getArgument(0));</span>
+<span class="fc" id="L192">        when(inventarioRepository.existsByProductoId(3L)).thenReturn(false);</span>
 
-<span class="fc" id="L197">        InventarioInputDTO invInput = new InventarioInputDTO(3L, 20, true);</span>
+<span class="fc" id="L194">        InventarioInputDTO invInput = new InventarioInputDTO(3L, 20, true);</span>
 
-<span class="fc" id="L199">        InventarioResponseDTO resultado = inventarioService.save(invInput);</span>
+<span class="fc" id="L196">        InventarioResponseDTO resultado = inventarioService.save(invInput);</span>
 
-<span class="fc" id="L201">        assertNotNull(resultado);</span>
-<span class="fc" id="L202">        assertEquals(invInput.getProductoId(), resultado.getProductoId());</span>
+<span class="fc" id="L198">        assertNotNull(resultado);</span>
+<span class="fc" id="L199">        assertEquals(invInput.getProductoId(), resultado.getProductoId());</span>
 
-<span class="fc" id="L204">        verify(toAPICatalogFeign, times(2)).obtener(3L);</span>
-<span class="fc" id="L205">        verify(inventarioRepository).save(any(Inventario.class));</span>
-<span class="fc" id="L206">        verify(inventarioRepository).existsByProductoId(3L);</span>
-<span class="fc" id="L207">    }</span>
+<span class="fc" id="L201">        verify(toAPICatalogFeign, times(2)).obtener(3L);</span>
+<span class="fc" id="L202">        verify(inventarioRepository).save(any(Inventario.class));</span>
+<span class="fc" id="L203">        verify(inventarioRepository).existsByProductoId(3L);</span>
+<span class="fc" id="L204">    }</span>
 
     @Test
     void saveExceptionProductoYaRegistradoTest(){
-<span class="fc" id="L211">        Inventario registro = new Inventario(1L, 3L, 20, true);</span>
-<span class="fc" id="L212">        when(inventarioRepository.existsByProductoId(registro.getProductoId())).thenReturn(true);</span>
+<span class="fc" id="L208">        Inventario registro = new Inventario(1L, 3L, 20, true);</span>
+<span class="fc" id="L209">        when(inventarioRepository.existsByProductoId(registro.getProductoId())).thenReturn(true);</span>
 
-<span class="fc" id="L214">        InventarioInputDTO invInput = new InventarioInputDTO(3L, 20, true);</span>
-<span class="pc" id="L215">        IdExisteException exception = assertThrows(IdExisteException.class, () -&gt; inventarioService.save(invInput));</span>
+<span class="fc" id="L211">        InventarioInputDTO invInput = new InventarioInputDTO(3L, 20, true);</span>
+<span class="pc" id="L212">        IdExisteException exception = assertThrows(IdExisteException.class, () -&gt; inventarioService.save(invInput));</span>
 
-<span class="fc" id="L217">        String expectedMessage = &quot;Producto ya registrado.&quot;;</span>
-<span class="fc" id="L218">        String actualMessage = exception.getMessage();</span>
+<span class="fc" id="L214">        String expectedMessage = &quot;Producto ya registrado.&quot;;</span>
+<span class="fc" id="L215">        String actualMessage = exception.getMessage();</span>
 
-<span class="fc" id="L220">        assertTrue(actualMessage.contains(expectedMessage));</span>
+<span class="fc" id="L217">        assertTrue(actualMessage.contains(expectedMessage));</span>
 
-<span class="fc" id="L222">        verify(inventarioRepository).existsByProductoId(registro.getProductoId());</span>
-<span class="fc" id="L223">        verify(inventarioRepository, never()).save(any(Inventario.class));</span>
-<span class="fc" id="L224">    }</span>
+<span class="fc" id="L219">        verify(inventarioRepository).existsByProductoId(registro.getProductoId());</span>
+<span class="fc" id="L220">        verify(inventarioRepository, never()).save(any(Inventario.class));</span>
+<span class="fc" id="L221">    }</span>
 
     @Test
     void saveExceptionProductoNoExisteTest(){
-<span class="fc" id="L228">        when(toAPICatalogFeign.obtener(3L)).thenReturn(null);</span>
+<span class="fc" id="L225">        when(toAPICatalogFeign.obtener(3L)).thenReturn(null);</span>
 
-<span class="fc" id="L230">        InventarioInputDTO invInput = new InventarioInputDTO(3L, 20, true);</span>
-<span class="pc" id="L231">        IdNoExisteException exception = assertThrows(IdNoExisteException.class, () -&gt; inventarioService.save(invInput));</span>
+<span class="fc" id="L227">        InventarioInputDTO invInput = new InventarioInputDTO(3L, 20, true);</span>
+<span class="pc" id="L228">        IdNoExisteException exception = assertThrows(IdNoExisteException.class, () -&gt; inventarioService.save(invInput));</span>
 
-<span class="fc" id="L233">        String expectedMessage = &quot;ID de producto no existe.&quot;;</span>
-<span class="fc" id="L234">        String actualMessage = exception.getMessage();</span>
+<span class="fc" id="L230">        String expectedMessage = &quot;ID de producto no existe.&quot;;</span>
+<span class="fc" id="L231">        String actualMessage = exception.getMessage();</span>
 
-<span class="fc" id="L236">        assertTrue(actualMessage.contains(expectedMessage));</span>
+<span class="fc" id="L233">        assertTrue(actualMessage.contains(expectedMessage));</span>
 
-<span class="fc" id="L238">        verify(inventarioRepository).existsByProductoId(3L);</span>
-<span class="fc" id="L239">        verify(toAPICatalogFeign).obtener(3L);</span>
-<span class="fc" id="L240">        verify(inventarioRepository, never()).save(any(Inventario.class));</span>
-<span class="fc" id="L241">    }</span>
+<span class="fc" id="L235">        verify(inventarioRepository).existsByProductoId(3L);</span>
+<span class="fc" id="L236">        verify(toAPICatalogFeign).obtener(3L);</span>
+<span class="fc" id="L237">        verify(inventarioRepository, never()).save(any(Inventario.class));</span>
+<span class="fc" id="L238">    }</span>
 
     @Test
     void deleteTest(){
-<span class="fc" id="L245">        when(inventarioRepository.existsById(3L)).thenReturn(true);</span>
-<span class="fc" id="L246">        boolean resultado = inventarioService.deleteById(3L);</span>
-<span class="fc" id="L247">        assertTrue(resultado);</span>
-<span class="fc" id="L248">        verify(inventarioRepository).existsById(3L);</span>
-<span class="fc" id="L249">        verify(inventarioRepository).deleteById(3L);</span>
-<span class="fc" id="L250">    }</span>
+<span class="fc" id="L242">        when(inventarioRepository.existsById(3L)).thenReturn(true);</span>
+<span class="fc" id="L243">        boolean resultado = inventarioService.deleteById(3L);</span>
+<span class="fc" id="L244">        assertTrue(resultado);</span>
+<span class="fc" id="L245">        verify(inventarioRepository).existsById(3L);</span>
+<span class="fc" id="L246">        verify(inventarioRepository).deleteById(3L);</span>
+<span class="fc" id="L247">    }</span>
 
     @Test
     void deleteExceptionIdNoExisteTest(){
-<span class="fc" id="L254">        when(inventarioRepository.existsById(3L)).thenReturn(false);</span>
-<span class="pc" id="L255">        IdNoExisteException exception = assertThrows(IdNoExisteException.class, () -&gt; inventarioService.deleteById(3L));</span>
+<span class="fc" id="L251">        when(inventarioRepository.existsById(3L)).thenReturn(false);</span>
+<span class="pc" id="L252">        IdNoExisteException exception = assertThrows(IdNoExisteException.class, () -&gt; inventarioService.deleteById(3L));</span>
 
-<span class="fc" id="L257">        String expectedMessage = &quot;ID de registro no existe.&quot;;</span>
-<span class="fc" id="L258">        String actualMessage = exception.getMessage();</span>
+<span class="fc" id="L254">        String expectedMessage = &quot;ID de registro no existe.&quot;;</span>
+<span class="fc" id="L255">        String actualMessage = exception.getMessage();</span>
 
-<span class="fc" id="L260">        assertTrue(actualMessage.contains(expectedMessage));</span>
+<span class="fc" id="L257">        assertTrue(actualMessage.contains(expectedMessage));</span>
 
-<span class="fc" id="L262">        verify(inventarioRepository).existsById(3L);</span>
-<span class="fc" id="L263">        verify(inventarioRepository, never()).deleteById(3L);</span>
-<span class="fc" id="L264">    }</span>
+<span class="fc" id="L259">        verify(inventarioRepository).existsById(3L);</span>
+<span class="fc" id="L260">        verify(inventarioRepository, never()).deleteById(3L);</span>
+<span class="fc" id="L261">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

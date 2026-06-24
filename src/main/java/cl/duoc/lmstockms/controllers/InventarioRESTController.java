@@ -3,6 +3,8 @@ package cl.duoc.lmstockms.controllers;
 import cl.duoc.lmstockms.dtos.InventarioInputDTO;
 import cl.duoc.lmstockms.dtos.InventarioResponseDTO;
 import cl.duoc.lmstockms.dtos.InventarioUpdateDTO;
+import cl.duoc.lmstockms.exceptions.IdExisteException;
+import cl.duoc.lmstockms.exceptions.IdNoExisteException;
 import cl.duoc.lmstockms.services.InventarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,6 +19,7 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -53,6 +56,11 @@ public class InventarioRESTController {
                     responseCode = "409",
                     description = "Conflicto al hacer solicitud (ej: productoId ya existe)",
                     content = @Content(schema = @Schema(hidden = true))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Producto no encontrado",
+                    content = @Content(schema = @Schema(hidden = true))
             )
         }
     )
@@ -63,11 +71,15 @@ public class InventarioRESTController {
         String logMsg = "Solicitud para crear/guardar inventario.";
         logger.info(logMsgRequest);
         InventarioResponseDTO created = inventarioService.save(dto);
+
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(created.getId()).toUri();
         //de componentes de constructor URI // de la actual request //ruta de id // sacar la id del obj creado // transformar a URI.
         logger.info(logMsg + "=> creado con ID Inventario: {}, ID Producto: {}, Cantidad: {}, Estado: {}.", created.getId(), created.getProductoId(), created.getCantidad(), created.getEstado());
-        return ResponseEntity.created(location).body(created);
         //devuelve el estado y la locación //devuelve el objeto creado
+
+        return ResponseEntity.created(location).body(created);
+
+
     }
 
     //READ:
@@ -208,13 +220,13 @@ public class InventarioRESTController {
         String logMsgRequest = "Recibiendo solicitud para actualizar inventario con ID: " + id + ".";
         String logMsg = "Solicitud para actualizar inventario con ID: " + id + ".";
         logger.info(logMsgRequest);
-        ent.setId(id);
         InventarioResponseDTO updated = inventarioService.update(ent);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(updated.getId()).toUri();
         //de componentes de constructor URI // de la actual request //ruta de id // sacar la id del obj creado // transformar a URI.
         logger.info(logMsg + " => actualizado.");
         return ResponseEntity.status(200).location(location).body(updated);
         //devuelve el estado y la locación //devuelve el objeto creado
+
     }
 
     @ApiResponses(value = {

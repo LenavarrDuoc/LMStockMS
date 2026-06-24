@@ -3,6 +3,8 @@
 import cl.duoc.lmstockms.dtos.InventarioInputDTO;
 import cl.duoc.lmstockms.dtos.InventarioResponseDTO;
 import cl.duoc.lmstockms.dtos.InventarioUpdateDTO;
+import cl.duoc.lmstockms.exceptions.IdExisteException;
+import cl.duoc.lmstockms.exceptions.IdNoExisteException;
 import cl.duoc.lmstockms.services.InventarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,6 +19,7 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -27,9 +30,9 @@ import java.util.List;
 @RestController
 @RequestMapping(&quot;/api/v1/inventarios&quot;)
 @Tag(name = &quot;Stock&quot;, description = &quot;Gestion de inventario&quot;)
-<span class="fc" id="L30">public class InventarioRESTController {</span>
+<span class="fc" id="L33">public class InventarioRESTController {</span>
 
-<span class="fc" id="L32">    private static final Logger logger = LoggerFactory.getLogger(InventarioRESTController.class.getName());</span>
+<span class="fc" id="L35">    private static final Logger logger = LoggerFactory.getLogger(InventarioRESTController.class.getName());</span>
 
     @Autowired
     private InventarioService inventarioService;
@@ -53,21 +56,30 @@ import java.util.List;
                     responseCode = &quot;409&quot;,
                     description = &quot;Conflicto al hacer solicitud (ej: productoId ya existe)&quot;,
                     content = @Content(schema = @Schema(hidden = true))
+            ),
+            @ApiResponse(
+                    responseCode = &quot;404&quot;,
+                    description = &quot;Producto no encontrado&quot;,
+                    content = @Content(schema = @Schema(hidden = true))
             )
         }
     )
     @Operation(summary = &quot;Crea inventario&quot;, description = &quot;Guarda un registro nuevo de inventario&quot;)
     @PostMapping
     public ResponseEntity&lt;InventarioResponseDTO&gt; save(@Valid @RequestBody InventarioInputDTO dto){
-<span class="nc" id="L62">        String logMsgRequest = &quot;Recibiendo solicitud para crear/guardar inventario.&quot;;</span>
-<span class="nc" id="L63">        String logMsg = &quot;Solicitud para crear/guardar inventario.&quot;;</span>
-<span class="nc" id="L64">        logger.info(logMsgRequest);</span>
-<span class="nc" id="L65">        InventarioResponseDTO created = inventarioService.save(dto);</span>
-<span class="nc" id="L66">        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path(&quot;/{id}&quot;).buildAndExpand(created.getId()).toUri();</span>
+<span class="fc" id="L70">        String logMsgRequest = &quot;Recibiendo solicitud para crear/guardar inventario.&quot;;</span>
+<span class="fc" id="L71">        String logMsg = &quot;Solicitud para crear/guardar inventario.&quot;;</span>
+<span class="fc" id="L72">        logger.info(logMsgRequest);</span>
+<span class="fc" id="L73">        InventarioResponseDTO created = inventarioService.save(dto);</span>
+
+<span class="fc" id="L75">        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path(&quot;/{id}&quot;).buildAndExpand(created.getId()).toUri();</span>
         //de componentes de constructor URI // de la actual request //ruta de id // sacar la id del obj creado // transformar a URI.
-<span class="nc" id="L68">        logger.info(logMsg + &quot;=&gt; creado con ID Inventario: {}, ID Producto: {}, Cantidad: {}, Estado: {}.&quot;, created.getId(), created.getProductoId(), created.getCantidad(), created.getEstado());</span>
-<span class="nc" id="L69">        return ResponseEntity.created(location).body(created);</span>
+<span class="fc" id="L77">        logger.info(logMsg + &quot;=&gt; creado con ID Inventario: {}, ID Producto: {}, Cantidad: {}, Estado: {}.&quot;, created.getId(), created.getProductoId(), created.getCantidad(), created.getEstado());</span>
         //devuelve el estado y la locación //devuelve el objeto creado
+
+<span class="fc" id="L80">        return ResponseEntity.created(location).body(created);</span>
+
+
     }
 
     //READ:
@@ -95,17 +107,17 @@ import java.util.List;
     @GetMapping
     @Operation(summary = &quot;Lista todo&quot;, description = &quot;Muestra todos los registros de inventarios&quot;)
     public ResponseEntity&lt;List&lt;InventarioResponseDTO&gt;&gt; findAll(){
-<span class="nc" id="L98">        String logMsgRequest = &quot;Recibiendo solicitud para buscar listado de inventarios.&quot;;</span>
-<span class="nc" id="L99">        String logMsg = &quot;Solicitud para buscar listado de inventarios.&quot;;</span>
-<span class="nc" id="L100">        logger.info(logMsgRequest);</span>
-<span class="nc" id="L101">        List&lt;InventarioResponseDTO&gt; listadoDTO = inventarioService.findAll();</span>
+<span class="fc" id="L110">        String logMsgRequest = &quot;Recibiendo solicitud para buscar listado de inventarios.&quot;;</span>
+<span class="fc" id="L111">        String logMsg = &quot;Solicitud para buscar listado de inventarios.&quot;;</span>
+<span class="fc" id="L112">        logger.info(logMsgRequest);</span>
+<span class="fc" id="L113">        List&lt;InventarioResponseDTO&gt; listadoDTO = inventarioService.findAll();</span>
 
-<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (!listadoDTO.isEmpty()){</span>
-<span class="nc" id="L104">            logger.info(logMsg + &quot;=&gt; encontrado(s) y enlistado(s).&quot;);</span>
-<span class="nc" id="L105">            return ResponseEntity.ok(listadoDTO);</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">        if (!listadoDTO.isEmpty()){</span>
+<span class="fc" id="L116">            logger.info(logMsg + &quot;=&gt; encontrado(s) y enlistado(s).&quot;);</span>
+<span class="fc" id="L117">            return ResponseEntity.ok(listadoDTO);</span>
         }
-<span class="nc" id="L107">        logger.info(logMsg + &quot;=&gt; sin coincidencias (vacío).&quot;);</span>
-<span class="nc" id="L108">        return ResponseEntity.noContent().build();</span>
+<span class="fc" id="L119">        logger.info(logMsg + &quot;=&gt; sin coincidencias (vacío).&quot;);</span>
+<span class="fc" id="L120">        return ResponseEntity.noContent().build();</span>
     }
 
     @ApiResponses( value = {
@@ -132,16 +144,16 @@ import java.util.List;
     @GetMapping(&quot;/{id}&quot;)
     @Operation(summary = &quot;Encuentra por ID&quot;, description = &quot;Trae el registro perteneciente al ID ingresado&quot;)
     public ResponseEntity&lt;InventarioResponseDTO&gt; findById(@Parameter(description = &quot;ID de inventario&quot;, required = true) @PathVariable Long id){
-<span class="nc" id="L135">        String logMsgRequest = &quot;Recibiendo solicitud para buscar inventario por ID: &quot; + id + &quot;.&quot;;</span>
-<span class="nc" id="L136">        String logMsg = &quot;Solicitud para buscar inventario por ID: &quot; + id + &quot;.&quot;;</span>
-<span class="nc" id="L137">        logger.info(logMsgRequest);</span>
-<span class="nc" id="L138">        InventarioResponseDTO dto = inventarioService.findById(id);</span>
-<span class="nc bnc" id="L139" title="All 2 branches missed.">        if (dto != null){</span>
-<span class="nc" id="L140">            logger.info(logMsg + &quot;=&gt; encontrado.&quot;);</span>
-<span class="nc" id="L141">            return ResponseEntity.ok(dto);</span>
+<span class="fc" id="L147">        String logMsgRequest = &quot;Recibiendo solicitud para buscar inventario por ID: &quot; + id + &quot;.&quot;;</span>
+<span class="fc" id="L148">        String logMsg = &quot;Solicitud para buscar inventario por ID: &quot; + id + &quot;.&quot;;</span>
+<span class="fc" id="L149">        logger.info(logMsgRequest);</span>
+<span class="fc" id="L150">        InventarioResponseDTO dto = inventarioService.findById(id);</span>
+<span class="pc bpc" id="L151" title="1 of 2 branches missed.">        if (dto != null){</span>
+<span class="fc" id="L152">            logger.info(logMsg + &quot;=&gt; encontrado.&quot;);</span>
+<span class="fc" id="L153">            return ResponseEntity.ok(dto);</span>
         }
-<span class="nc" id="L143">        logger.info(logMsg + &quot;=&gt; no encontrado.&quot;);</span>
-<span class="nc" id="L144">        return ResponseEntity.notFound().build();</span>
+<span class="nc" id="L155">        logger.info(logMsg + &quot;=&gt; no encontrado.&quot;);</span>
+<span class="nc" id="L156">        return ResponseEntity.notFound().build();</span>
     }
 
     @ApiResponses(value = {
@@ -168,16 +180,16 @@ import java.util.List;
     @GetMapping(&quot;/by-id-producto/{productoId}&quot;)
     @Operation(summary = &quot;Encuentra por ID&quot;, description = &quot;Trae el registro perteneciente a Inventarios según ID de producto&quot;)
     public ResponseEntity&lt;InventarioResponseDTO&gt; findByProductoId(@Parameter(description = &quot;ID de producto&quot;, required = true) @PathVariable Long productoId){
-<span class="nc" id="L171">        String logMsgRequest = &quot;Recibiendo solicitud para buscar inventario por ID: &quot; + productoId + &quot;.&quot;;</span>
-<span class="nc" id="L172">        String logMsg = &quot;Solicitud para buscar inventario por ID: &quot; + productoId + &quot;.&quot;;</span>
-<span class="nc" id="L173">        logger.info(logMsgRequest);</span>
-<span class="nc" id="L174">        InventarioResponseDTO dto = inventarioService.findByProductoId(productoId);</span>
-<span class="nc bnc" id="L175" title="All 2 branches missed.">        if (dto != null){</span>
-<span class="nc" id="L176">            logger.info(logMsg + &quot;=&gt; encontrado con ID:{}&quot;, dto.getId() + &quot;.&quot;);</span>
-<span class="nc" id="L177">            return ResponseEntity.ok(dto);</span>
+<span class="fc" id="L183">        String logMsgRequest = &quot;Recibiendo solicitud para buscar inventario por ID: &quot; + productoId + &quot;.&quot;;</span>
+<span class="fc" id="L184">        String logMsg = &quot;Solicitud para buscar inventario por ID: &quot; + productoId + &quot;.&quot;;</span>
+<span class="fc" id="L185">        logger.info(logMsgRequest);</span>
+<span class="fc" id="L186">        InventarioResponseDTO dto = inventarioService.findByProductoId(productoId);</span>
+<span class="pc bpc" id="L187" title="1 of 2 branches missed.">        if (dto != null){</span>
+<span class="fc" id="L188">            logger.info(logMsg + &quot;=&gt; encontrado con ID:{}&quot;, dto.getId() + &quot;.&quot;);</span>
+<span class="fc" id="L189">            return ResponseEntity.ok(dto);</span>
         }
-<span class="nc" id="L179">        logger.info(logMsg + &quot;=&gt; no encontrado.&quot;);</span>
-<span class="nc" id="L180">        return ResponseEntity.notFound().build();</span>
+<span class="nc" id="L191">        logger.info(logMsg + &quot;=&gt; no encontrado.&quot;);</span>
+<span class="nc" id="L192">        return ResponseEntity.notFound().build();</span>
     }
 
     @ApiResponses(value = {
@@ -205,16 +217,16 @@ import java.util.List;
     @PutMapping(&quot;/{id}&quot;)
     @Operation(summary = &quot;Actualizar por ID&quot;, description = &quot;Actualiza información de registro perteneciente al ID ingresado&quot;)
     public ResponseEntity&lt;InventarioResponseDTO&gt; update(@Parameter(description = &quot;ID de inventario&quot;, required = true) @Valid @RequestBody InventarioUpdateDTO ent, @PathVariable Long id){
-<span class="nc" id="L208">        String logMsgRequest = &quot;Recibiendo solicitud para actualizar inventario con ID: &quot; + id + &quot;.&quot;;</span>
-<span class="nc" id="L209">        String logMsg = &quot;Solicitud para actualizar inventario con ID: &quot; + id + &quot;.&quot;;</span>
-<span class="nc" id="L210">        logger.info(logMsgRequest);</span>
-<span class="nc" id="L211">        ent.setId(id);</span>
-<span class="nc" id="L212">        InventarioResponseDTO updated = inventarioService.update(ent);</span>
-<span class="nc" id="L213">        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path(&quot;/{id}&quot;).buildAndExpand(updated.getId()).toUri();</span>
+<span class="fc" id="L220">        String logMsgRequest = &quot;Recibiendo solicitud para actualizar inventario con ID: &quot; + id + &quot;.&quot;;</span>
+<span class="fc" id="L221">        String logMsg = &quot;Solicitud para actualizar inventario con ID: &quot; + id + &quot;.&quot;;</span>
+<span class="fc" id="L222">        logger.info(logMsgRequest);</span>
+<span class="fc" id="L223">        InventarioResponseDTO updated = inventarioService.update(ent);</span>
+<span class="fc" id="L224">        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path(&quot;/{id}&quot;).buildAndExpand(updated.getId()).toUri();</span>
         //de componentes de constructor URI // de la actual request //ruta de id // sacar la id del obj creado // transformar a URI.
-<span class="nc" id="L215">        logger.info(logMsg + &quot; =&gt; actualizado.&quot;);</span>
-<span class="nc" id="L216">        return ResponseEntity.status(200).location(location).body(updated);</span>
+<span class="fc" id="L226">        logger.info(logMsg + &quot; =&gt; actualizado.&quot;);</span>
+<span class="fc" id="L227">        return ResponseEntity.status(200).location(location).body(updated);</span>
         //devuelve el estado y la locación //devuelve el objeto creado
+
     }
 
     @ApiResponses(value = {
@@ -243,15 +255,15 @@ import java.util.List;
     @DeleteMapping(&quot;/{id}&quot;)
     @Operation(summary = &quot;Eliminar por ID&quot;, description = &quot;Elimina el registro perteneciente al ID&quot;)
     public ResponseEntity&lt;Void&gt; deleteById(@Parameter(description = &quot;ID de inventario&quot;, required = true) @PathVariable Long id){
-<span class="nc" id="L246">        String logMsgRequest = &quot;Recibiendo solicitud para borrar inventario con ID: &quot; + id + &quot;.&quot;;</span>
-<span class="nc" id="L247">        String logMsg = &quot;Solicitud para borrar inventario con ID: &quot; + id + &quot;.&quot;;</span>
-<span class="nc" id="L248">        logger.info(logMsgRequest);</span>
-<span class="nc bnc" id="L249" title="All 2 branches missed.">        if(inventarioService.deleteById(id)){</span>
-<span class="nc" id="L250">            logger.info(logMsg + &quot; =&gt; encontrado y borrado.&quot;);</span>
-<span class="nc" id="L251">            return ResponseEntity.noContent().build();</span>
+<span class="fc" id="L258">        String logMsgRequest = &quot;Recibiendo solicitud para borrar inventario con ID: &quot; + id + &quot;.&quot;;</span>
+<span class="fc" id="L259">        String logMsg = &quot;Solicitud para borrar inventario con ID: &quot; + id + &quot;.&quot;;</span>
+<span class="fc" id="L260">        logger.info(logMsgRequest);</span>
+<span class="pc bpc" id="L261" title="1 of 2 branches missed.">        if(inventarioService.deleteById(id)){</span>
+<span class="fc" id="L262">            logger.info(logMsg + &quot; =&gt; encontrado y borrado.&quot;);</span>
+<span class="fc" id="L263">            return ResponseEntity.noContent().build();</span>
         }
-<span class="nc" id="L253">        logger.info(logMsg + &quot; =&gt; no encontrado.&quot;);</span>
-<span class="nc" id="L254">        return ResponseEntity.notFound().build();</span>
+<span class="nc" id="L265">        logger.info(logMsg + &quot; =&gt; no encontrado.&quot;);</span>
+<span class="nc" id="L266">        return ResponseEntity.notFound().build();</span>
     }
 
 }

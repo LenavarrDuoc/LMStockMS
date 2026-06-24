@@ -31,18 +31,18 @@ import java.util.stream.Collectors;
 
     @ExceptionHandler(IdExisteException.class)
     public ProblemDetail handlerNoExisteID(IdExisteException exception){
-<span class="nc" id="L34">        ProblemDetail problemDetail = ProblemDetail.forStatus(409); //HTTP 409 = conlficto de datos</span>
-<span class="nc" id="L35">        problemDetail.setTitle(title2);</span>
-<span class="nc" id="L36">        problemDetail.setDetail(exception.getMessage());</span>
-<span class="nc" id="L37">        return problemDetail;</span>
+<span class="fc" id="L34">        ProblemDetail problemDetail = ProblemDetail.forStatus(409); //HTTP 409 = conlficto de datos</span>
+<span class="fc" id="L35">        problemDetail.setTitle(title2);</span>
+<span class="fc" id="L36">        problemDetail.setDetail(exception.getMessage());</span>
+<span class="fc" id="L37">        return problemDetail;</span>
     }
 
     @ExceptionHandler(IdNoExisteException.class)
     public ProblemDetail handlerNoExisteID(IdNoExisteException exception){
-<span class="nc" id="L42">        ProblemDetail problemDetail = ProblemDetail.forStatus(404); //HTTP 404 = no encontrado</span>
-<span class="nc" id="L43">        problemDetail.setTitle(title3);</span>
-<span class="nc" id="L44">        problemDetail.setDetail(exception.getMessage());</span>
-<span class="nc" id="L45">        return problemDetail;</span>
+<span class="fc" id="L42">        ProblemDetail problemDetail = ProblemDetail.forStatus(404); //HTTP 404 = no encontrado</span>
+<span class="fc" id="L43">        problemDetail.setTitle(title3);</span>
+<span class="fc" id="L44">        problemDetail.setDetail(exception.getMessage());</span>
+<span class="fc" id="L45">        return problemDetail;</span>
     }
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleRuntimeException(RuntimeException ex) {
