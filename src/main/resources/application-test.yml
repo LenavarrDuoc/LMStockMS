@@ -19,7 +19,7 @@ spring:
     hibernate:
       # Solo utilizamos create-drop al estar creando las entidades y configurando la BD.
       # Una vez definida, debemos trabajar con update:
-      ddl-auto: create-drop
+      ddl-auto: validate
       # ddl-auto: update
 
     # Muestra un pseudocódigo SQL por consola para saber qué procedimiento SQL se está ejecutando.
