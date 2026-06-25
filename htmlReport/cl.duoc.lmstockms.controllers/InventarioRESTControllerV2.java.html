@@ -74,21 +74,21 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
     )
     @PostMapping(produces = MediaTypes.HAL_JSON_VALUE)
     public ResponseEntity&lt;EntityModel&lt;InventarioResponseDTO&gt;&gt; save(@Valid @RequestBody InventarioInputDTO dto){
-<span class="nc" id="L77">        String logMsgRequest = &quot;Recibiendo solicitud para crear/guardar inventario.&quot;;</span>
-<span class="nc" id="L78">        String logMsg = &quot;Solicitud para crear/guardar inventario.&quot;;</span>
-<span class="nc" id="L79">        logger.info(logMsgRequest);</span>
+<span class="fc" id="L77">        String logMsgRequest = &quot;Recibiendo solicitud para crear/guardar inventario.&quot;;</span>
+<span class="fc" id="L78">        String logMsg = &quot;Solicitud para crear/guardar inventario.&quot;;</span>
+<span class="fc" id="L79">        logger.info(logMsgRequest);</span>
 
-<span class="nc" id="L81">        InventarioResponseDTO created = inventarioService.save(dto);</span>
+<span class="fc" id="L81">        InventarioResponseDTO created = inventarioService.save(dto);</span>
 
-<span class="nc" id="L83">        URI location = linkTo(methodOn(InventarioRESTControllerV2.class).findById(created.getId())).toUri();</span>
+<span class="fc" id="L83">        URI location = linkTo(methodOn(InventarioRESTControllerV2.class).findById(created.getId())).toUri();</span>
         //de componentes de constructor URI // de la actual request //ruta de id // sacar la id del obj creado // transformar a URI.
         
-<span class="nc" id="L86">        logger.info(logMsg + &quot;=&gt; creado con ID Inventario: {}, ID Producto: {}, Cantidad: {}, Estado: {}.&quot;, created.getId(),</span>
-<span class="nc" id="L87">                                                                                                            created.getProductoId(), </span>
-<span class="nc" id="L88">                                                                                                            created.getCantidad(), </span>
-<span class="nc" id="L89">                                                                                                            created.getEstado());</span>
+<span class="fc" id="L86">        logger.info(logMsg + &quot;=&gt; creado con ID Inventario: {}, ID Producto: {}, Cantidad: {}, Estado: {}.&quot;, created.getId(),</span>
+<span class="fc" id="L87">                                                                                                            created.getProductoId(), </span>
+<span class="fc" id="L88">                                                                                                            created.getCantidad(), </span>
+<span class="fc" id="L89">                                                                                                            created.getEstado());</span>
                                                                                                             
-<span class="nc" id="L91">        return ResponseEntity.created(location).body(assembler.toModel(created));</span>
+<span class="fc" id="L91">        return ResponseEntity.created(location).body(assembler.toModel(created));</span>
     }
 
     //READ:
@@ -115,18 +115,18 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
     )
     @GetMapping(produces = MediaTypes.HAL_JSON_VALUE)
     public ResponseEntity&lt;CollectionModel&lt;EntityModel&lt;InventarioResponseDTO&gt;&gt;&gt; findAll(){
-<span class="nc" id="L118">        String logMsgRequest = &quot;HATEOAS Recibiendo solicitud para buscar listado de inventarios.&quot;;</span>
-<span class="nc" id="L119">        String logMsg = &quot;Solicitud para buscar listado de inventarios.&quot;;</span>
-<span class="nc" id="L120">        logger.info(logMsgRequest);</span>
-<span class="nc" id="L121">        List&lt;EntityModel&lt;InventarioResponseDTO&gt;&gt; listadoDTO = inventarioService.findAll().stream()</span>
-<span class="nc" id="L122">                                                                                        .map(assembler::toModel)</span>
-<span class="nc" id="L123">                                                                                        .collect(Collectors.toList());;</span>
-<span class="nc bnc" id="L124" title="All 2 branches missed.">        if (!listadoDTO.isEmpty()){</span>
-<span class="nc" id="L125">            logger.info(logMsg + &quot;=&gt; encontrado(s) y enlistado(s).&quot;);</span>
-<span class="nc" id="L126">            return ResponseEntity.ok(CollectionModel.of(listadoDTO,linkTo(methodOn(InventarioRESTControllerV2.class).findAll()).withSelfRel()));</span>
+<span class="fc" id="L118">        String logMsgRequest = &quot;HATEOAS Recibiendo solicitud para buscar listado de inventarios.&quot;;</span>
+<span class="fc" id="L119">        String logMsg = &quot;Solicitud para buscar listado de inventarios.&quot;;</span>
+<span class="fc" id="L120">        logger.info(logMsgRequest);</span>
+<span class="fc" id="L121">        List&lt;EntityModel&lt;InventarioResponseDTO&gt;&gt; listadoDTO = inventarioService.findAll().stream()</span>
+<span class="fc" id="L122">                                                                                        .map(assembler::toModel)</span>
+<span class="fc" id="L123">                                                                                        .collect(Collectors.toList());;</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        if (!listadoDTO.isEmpty()){</span>
+<span class="fc" id="L125">            logger.info(logMsg + &quot;=&gt; encontrado(s) y enlistado(s).&quot;);</span>
+<span class="fc" id="L126">            return ResponseEntity.ok(CollectionModel.of(listadoDTO,linkTo(methodOn(InventarioRESTControllerV2.class).findAll()).withSelfRel()));</span>
         }
-<span class="nc" id="L128">        logger.info(logMsg + &quot;=&gt; sin coincidencias (vacío).&quot;);</span>
-<span class="nc" id="L129">        return ResponseEntity.noContent().build();</span>
+<span class="fc" id="L128">        logger.info(logMsg + &quot;=&gt; sin coincidencias (vacío).&quot;);</span>
+<span class="fc" id="L129">        return ResponseEntity.noContent().build();</span>
     }
   
     @ApiResponses( value = {
@@ -152,13 +152,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
     )
     @GetMapping(value = &quot;/{id}&quot;, produces = MediaTypes.HAL_JSON_VALUE)
     public ResponseEntity&lt;EntityModel&lt;InventarioResponseDTO&gt;&gt; findById(@PathVariable Long id){
-<span class="nc" id="L155">        String logMsgRequest = &quot;Recibiendo solicitud para buscar inventario por ID: &quot; + id + &quot;.&quot;;</span>
-<span class="nc" id="L156">        String logMsg = &quot;Solicitud para buscar inventario por ID: &quot; + id + &quot;.&quot;;</span>
-<span class="nc" id="L157">        logger.info(logMsgRequest);</span>
-<span class="nc" id="L158">        InventarioResponseDTO dto = inventarioService.findById(id);</span>
-<span class="nc bnc" id="L159" title="All 2 branches missed.">        if (dto != null){</span>
-<span class="nc" id="L160">            logger.info(logMsg + &quot;=&gt; encontrado.&quot;);</span>
-<span class="nc" id="L161">            return ResponseEntity.ok(assembler.toModel(dto));</span>
+<span class="fc" id="L155">        String logMsgRequest = &quot;Recibiendo solicitud para buscar inventario por ID: &quot; + id + &quot;.&quot;;</span>
+<span class="fc" id="L156">        String logMsg = &quot;Solicitud para buscar inventario por ID: &quot; + id + &quot;.&quot;;</span>
+<span class="fc" id="L157">        logger.info(logMsgRequest);</span>
+<span class="fc" id="L158">        InventarioResponseDTO dto = inventarioService.findById(id);</span>
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">        if (dto != null){</span>
+<span class="fc" id="L160">            logger.info(logMsg + &quot;=&gt; encontrado.&quot;);</span>
+<span class="fc" id="L161">            return ResponseEntity.ok(assembler.toModel(dto));</span>
         }
 <span class="nc" id="L163">        logger.info(logMsg + &quot;=&gt; no encontrado.&quot;);</span>
 <span class="nc" id="L164">        return ResponseEntity.notFound().build();</span>
@@ -186,13 +186,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
     )
     @GetMapping(value = &quot;/by-id-producto/{productoId}&quot;, produces = MediaTypes.HAL_JSON_VALUE)
     public ResponseEntity&lt;EntityModel&lt;InventarioResponseDTO&gt;&gt; findByProductoId(@PathVariable Long productoId){
-<span class="nc" id="L189">        String logMsgRequest = &quot;Recibiendo solicitud para buscar inventario por ID: &quot; + productoId + &quot;.&quot;;</span>
-<span class="nc" id="L190">        String logMsg = &quot;Solicitud para buscar inventario por ID: &quot; + productoId + &quot;.&quot;;</span>
-<span class="nc" id="L191">        logger.info(logMsgRequest);</span>
-<span class="nc" id="L192">        InventarioResponseDTO dto = inventarioService.findByProductoId(productoId);</span>
-<span class="nc bnc" id="L193" title="All 2 branches missed.">        if (dto != null){</span>
-<span class="nc" id="L194">            logger.info(logMsg + &quot;=&gt; encontrado con ID:{}&quot;, dto.getId() + &quot;.&quot;);</span>
-<span class="nc" id="L195">            return ResponseEntity.ok(assembler.toModel(dto));</span>
+<span class="fc" id="L189">        String logMsgRequest = &quot;Recibiendo solicitud para buscar inventario por ID: &quot; + productoId + &quot;.&quot;;</span>
+<span class="fc" id="L190">        String logMsg = &quot;Solicitud para buscar inventario por ID: &quot; + productoId + &quot;.&quot;;</span>
+<span class="fc" id="L191">        logger.info(logMsgRequest);</span>
+<span class="fc" id="L192">        InventarioResponseDTO dto = inventarioService.findByProductoId(productoId);</span>
+<span class="pc bpc" id="L193" title="1 of 2 branches missed.">        if (dto != null){</span>
+<span class="fc" id="L194">            logger.info(logMsg + &quot;=&gt; encontrado con ID:{}&quot;, dto.getId() + &quot;.&quot;);</span>
+<span class="fc" id="L195">            return ResponseEntity.ok(assembler.toModel(dto));</span>
         }
 <span class="nc" id="L197">        logger.info(logMsg + &quot;=&gt; no encontrado.&quot;);</span>
 <span class="nc" id="L198">        return ResponseEntity.notFound().build();</span>
@@ -222,19 +222,19 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
     //UPDATE:
     @PutMapping(value = &quot;/{id}&quot;, produces = MediaTypes.HAL_JSON_VALUE)
     public ResponseEntity&lt;EntityModel&lt;InventarioResponseDTO&gt;&gt; update(@Valid @RequestBody InventarioUpdateDTO ent, @PathVariable Long id){
-<span class="nc" id="L225">        String logMsgRequest = &quot;Recibiendo solicitud para actualizar inventario con ID: &quot; + id + &quot;.&quot;;</span>
-<span class="nc" id="L226">        String logMsg = &quot;Solicitud para actualizar inventario con ID: &quot; + id + &quot;.&quot;;</span>
-<span class="nc" id="L227">        logger.info(logMsgRequest);</span>
+<span class="fc" id="L225">        String logMsgRequest = &quot;Recibiendo solicitud para actualizar inventario con ID: &quot; + id + &quot;.&quot;;</span>
+<span class="fc" id="L226">        String logMsg = &quot;Solicitud para actualizar inventario con ID: &quot; + id + &quot;.&quot;;</span>
+<span class="fc" id="L227">        logger.info(logMsgRequest);</span>
         
-<span class="nc" id="L229">        ent.setId(id);</span>
+<span class="fc" id="L229">        ent.setId(id);</span>
         
-<span class="nc" id="L231">        InventarioResponseDTO updated = inventarioService.update(ent);</span>
+<span class="fc" id="L231">        InventarioResponseDTO updated = inventarioService.update(ent);</span>
 
-<span class="nc" id="L233">        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path(&quot;/{id}&quot;).buildAndExpand(updated.getId()).toUri();</span>
+<span class="fc" id="L233">        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path(&quot;/{id}&quot;).buildAndExpand(updated.getId()).toUri();</span>
         //de componentes de constructor URI // de la actual request //ruta de id // sacar la id del obj creado // transformar a URI.
 
-<span class="nc" id="L236">        logger.info(logMsg + &quot; =&gt; actualizado.&quot;);</span>
-<span class="nc" id="L237">        return ResponseEntity.status(200).location(location).body(assembler.toModel(updated));</span>
+<span class="fc" id="L236">        logger.info(logMsg + &quot; =&gt; actualizado.&quot;);</span>
+<span class="fc" id="L237">        return ResponseEntity.status(200).location(location).body(assembler.toModel(updated));</span>
         //devuelve el estado y la locación //devuelve el objeto creado
     }
 
@@ -263,12 +263,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
     //DELETE:
     @DeleteMapping(value = &quot;/{id}&quot;, produces = MediaTypes.HAL_JSON_VALUE)
     public ResponseEntity&lt;Void&gt; deleteById(@PathVariable Long id){
-<span class="nc" id="L266">        String logMsgRequest = &quot;Recibiendo solicitud para borrar inventario con ID: &quot; + id + &quot;.&quot;;</span>
-<span class="nc" id="L267">        String logMsg = &quot;Solicitud para borrar inventario con ID: &quot; + id + &quot;.&quot;;</span>
-<span class="nc" id="L268">        logger.info(logMsgRequest);</span>
-<span class="nc bnc" id="L269" title="All 2 branches missed.">        if(inventarioService.deleteById(id)){</span>
-<span class="nc" id="L270">            logger.info(logMsg + &quot; =&gt; encontrado y borrado.&quot;);</span>
-<span class="nc" id="L271">            return ResponseEntity.noContent().build();</span>
+<span class="fc" id="L266">        String logMsgRequest = &quot;Recibiendo solicitud para borrar inventario con ID: &quot; + id + &quot;.&quot;;</span>
+<span class="fc" id="L267">        String logMsg = &quot;Solicitud para borrar inventario con ID: &quot; + id + &quot;.&quot;;</span>
+<span class="fc" id="L268">        logger.info(logMsgRequest);</span>
+<span class="pc bpc" id="L269" title="1 of 2 branches missed.">        if(inventarioService.deleteById(id)){</span>
+<span class="fc" id="L270">            logger.info(logMsg + &quot; =&gt; encontrado y borrado.&quot;);</span>
+<span class="fc" id="L271">            return ResponseEntity.noContent().build();</span>
         }
 <span class="nc" id="L273">        logger.info(logMsg + &quot; =&gt; no encontrado.&quot;);</span>
 <span class="nc" id="L274">        return ResponseEntity.notFound().build();</span>

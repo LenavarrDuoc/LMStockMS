@@ -14,10 +14,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
     @Override
     public EntityModel&lt;InventarioResponseDTO&gt; toModel(InventarioResponseDTO inventario){
-<span class="nc" id="L17">        return EntityModel.of(inventario,</span>
-<span class="nc" id="L18">                linkTo(methodOn(InventarioRESTControllerV2.class).findById(inventario.getId())).withSelfRel(),</span>
-<span class="nc" id="L19">                linkTo(methodOn(InventarioRESTControllerV2.class).findAll()).withRel(&quot;list-all&quot;),</span>
-<span class="nc" id="L20">                linkTo(methodOn(InventarioRESTControllerV2.class).findByProductoId(inventario.getProductoId())).withRel(&quot;find-by-producto-id&quot;)</span>
+<span class="fc" id="L17">        return EntityModel.of(inventario,</span>
+<span class="fc" id="L18">                linkTo(methodOn(InventarioRESTControllerV2.class).findById(inventario.getId())).withSelfRel(),</span>
+<span class="fc" id="L19">                linkTo(methodOn(InventarioRESTControllerV2.class).findAll()).withRel(&quot;list-all&quot;),</span>
+<span class="fc" id="L20">                linkTo(methodOn(InventarioRESTControllerV2.class).findByProductoId(inventario.getProductoId())).withRel(&quot;find-by-producto-id&quot;)</span>
         );
     }
 

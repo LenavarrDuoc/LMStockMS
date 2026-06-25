@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InventarioControllerTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jacoco.exec</a> &gt; <a href="index.source.html" class="el_package">cl.duoc.lmstockms.controller</a> &gt; <span class="el_source">InventarioControllerTest.java</span></div><h1>InventarioControllerTest.java</h1><pre class="source lang-java linenums">package cl.duoc.lmstockms.controller;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+
+import cl.duoc.lmstockms.controllers.InventarioRESTController;
+import cl.duoc.lmstockms.dtos.InventarioInputDTO;
+import cl.duoc.lmstockms.dtos.InventarioResponseDTO;
+import cl.duoc.lmstockms.dtos.InventarioUpdateDTO;
+import cl.duoc.lmstockms.exceptions.IdExisteException;
+import cl.duoc.lmstockms.exceptions.IdNoExisteException;
+import cl.duoc.lmstockms.services.InventarioService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
+
+import java.util.List;
+
+import static org.mockito.Mockito.when;
+
+@WebMvcTest(controllers = InventarioRESTController.class, excludeAutoConfiguration = ServletWebSecurityAutoConfiguration.class)
+<span class="fc" id="L31">public class InventarioControllerTest {</span>
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockitoBean
+    private InventarioService inventarioService;
+
+    private InventarioResponseDTO dtoResponse1;
+    private InventarioResponseDTO dtoResponse2;
+    private InventarioInputDTO dtoInput;
+    private InventarioUpdateDTO dtoUpdate;
+
+<span class="fc" id="L46">    private final IdNoExisteException idNoExisteException = new IdNoExisteException(&quot;ID de registro no existe.&quot;);</span>
+<span class="fc" id="L47">    private final IdExisteException idExisteException = new IdExisteException(&quot;Producto ya registrado.&quot;);</span>
+
+    @BeforeEach
+    void setUp(){
+<span class="fc" id="L51">        dtoResponse1 = new InventarioResponseDTO(1L, 20, 3L, &quot;Java for Dummies&quot;,</span>
+<span class="fc" id="L52">                &quot;Terry A. Burd&quot;, 2022, &quot;978-111-98-6164-5&quot;,</span>
+<span class="fc" id="L53">                &quot;Programación&quot;, &quot;Wiley&quot;, true);</span>
+<span class="fc" id="L54">        dtoResponse2 = new InventarioResponseDTO(2L, 10, 5L, &quot;Clean Code&quot;,</span>
+<span class="fc" id="L55">                &quot;Robert C. Martin&quot;, 2008, &quot;978-013-23-5088-4&quot;,</span>
+<span class="fc" id="L56">                &quot;Programación&quot;, &quot;Prentice Hall&quot;, true);</span>
+
+<span class="fc" id="L58">        dtoInput = new InventarioInputDTO(3L, 20, true);</span>
+<span class="fc" id="L59">        dtoUpdate = new InventarioUpdateDTO(1L, 3L, 79, false);</span>
+
+<span class="fc" id="L61">    }</span>
+
+    @Test
+    void findAllTest() throws Exception{
+<span class="fc" id="L65">        when(inventarioService.findAll()).thenReturn(List.of(dtoResponse1, dtoResponse2));</span>
+<span class="fc" id="L66">        mockMvc.perform(get(&quot;/api/v1/inventarios&quot;))</span>
+<span class="fc" id="L67">                .andExpect(status().isOk())</span>
+<span class="fc" id="L68">                .andExpect(jsonPath(&quot;$.length()&quot;).value(2))</span>
+<span class="fc" id="L69">                .andExpect(jsonPath(&quot;$[0].productoNombre&quot;).value(&quot;Java for Dummies&quot;))</span>
+<span class="fc" id="L70">                .andExpect(jsonPath(&quot;$[1].productoNombre&quot;).value(&quot;Clean Code&quot;));</span>
+<span class="fc" id="L71">        verify(inventarioService).findAll();</span>
+<span class="fc" id="L72">    }</span>
+
+    @Test
+    void findAllEmptyTest() throws Exception{
+<span class="fc" id="L76">        when(inventarioService.findAll()).thenReturn(List.of());</span>
+<span class="fc" id="L77">        mockMvc.perform(get(&quot;/api/v1/inventarios&quot;))</span>
+<span class="fc" id="L78">                .andExpect(status().isNoContent());</span>
+<span class="fc" id="L79">        verify(inventarioService).findAll();</span>
+<span class="fc" id="L80">    }</span>
+
+    @Test
+    void findByIdTest() throws Exception{
+<span class="fc" id="L84">        when(inventarioService.findById(dtoResponse1.getId())).thenReturn(dtoResponse1);</span>
+<span class="fc" id="L85">        mockMvc.perform(get(&quot;/api/v1/inventarios/{id}&quot;, dtoResponse1.getId()))</span>
+<span class="fc" id="L86">                .andExpect(status().isOk())</span>
+<span class="fc" id="L87">                .andExpect(jsonPath(&quot;$.id&quot;).value(1))</span>
+<span class="fc" id="L88">                .andExpect(jsonPath(&quot;$.productoNombre&quot;).value(&quot;Java for Dummies&quot;));</span>
+<span class="fc" id="L89">        verify(inventarioService).findById(dtoResponse1.getId());</span>
+<span class="fc" id="L90">    }</span>
+
+    @Test
+    void findByIdNotFound() throws Exception{
+<span class="fc" id="L94">        when(inventarioService.findById(dtoResponse1.getId())).thenThrow(idNoExisteException);</span>
+<span class="fc" id="L95">        mockMvc.perform(get(&quot;/api/v1/inventarios/{id}&quot;, dtoResponse1.getId()))</span>
+<span class="fc" id="L96">                .andExpect(status().isNotFound())</span>
+<span class="fc" id="L97">                .andExpect(jsonPath(&quot;$.detail&quot;).value(idNoExisteException.getMessage()));</span>
+<span class="fc" id="L98">        verify(inventarioService).findById(dtoResponse1.getId());</span>
+<span class="fc" id="L99">    }</span>
+
+    @Test
+    void createTest() throws Exception{
+<span class="fc" id="L103">        when(inventarioService.save(any(InventarioInputDTO.class))).thenReturn(dtoResponse1);</span>
+<span class="fc" id="L104">        mockMvc.perform(post(&quot;/api/v1/inventarios&quot;)</span>
+<span class="fc" id="L105">                        .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L106">                        .content(objectMapper.writeValueAsString(dtoInput)))</span>
+<span class="fc" id="L107">                .andExpect(status().isCreated())</span>
+<span class="fc" id="L108">                .andExpect(jsonPath(&quot;$.productoId&quot;).value(dtoInput.getProductoId()));</span>
+<span class="fc" id="L109">        verify(inventarioService).save(dtoInput);</span>
+<span class="fc" id="L110">    }</span>
+
+    @Test
+    void createRegistroYaExisteTests() throws Exception{
+<span class="fc" id="L114">        when(inventarioService.save(any(InventarioInputDTO.class))).thenThrow(idExisteException);</span>
+<span class="fc" id="L115">        mockMvc.perform(post(&quot;/api/v1/inventarios&quot;)</span>
+<span class="fc" id="L116">                        .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L117">                        .content(objectMapper.writeValueAsString(dtoInput)))</span>
+<span class="fc" id="L118">                .andExpect(status().isConflict())</span>
+<span class="fc" id="L119">                .andExpect(jsonPath(&quot;$.detail&quot;).value(idExisteException.getMessage()));</span>
+<span class="fc" id="L120">        verify(inventarioService).save(any(InventarioInputDTO.class));</span>
+<span class="fc" id="L121">    }</span>
+
+    @Test
+    void createProductoNoExiste() throws Exception{
+<span class="fc" id="L125">        when(inventarioService.save(any(InventarioInputDTO.class))).thenThrow(idNoExisteException);</span>
+<span class="fc" id="L126">        mockMvc.perform(post(&quot;/api/v1/inventarios&quot;)</span>
+<span class="fc" id="L127">                        .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L128">                        .content(objectMapper.writeValueAsString(dtoInput)))</span>
+<span class="fc" id="L129">                .andExpect(status().isNotFound())</span>
+<span class="fc" id="L130">                .andExpect(jsonPath(&quot;$.detail&quot;).value(idNoExisteException.getMessage()));</span>
+<span class="fc" id="L131">        verify(inventarioService).save(any(InventarioInputDTO.class));</span>
+<span class="fc" id="L132">    }</span>
+
+    @Test
+    void findByProductoIdTest() throws Exception{
+<span class="fc" id="L136">        when(inventarioService.findByProductoId(dtoInput.getProductoId())).thenReturn(dtoResponse1);</span>
+<span class="fc" id="L137">        mockMvc.perform(get(&quot;/api/v1/inventarios/by-id-producto/{id}&quot;, dtoInput.getProductoId()))</span>
+<span class="fc" id="L138">                .andExpect(status().isOk())</span>
+<span class="fc" id="L139">                .andExpect(jsonPath(&quot;$.productoId&quot;).value(dtoInput.getProductoId()));</span>
+<span class="fc" id="L140">        verify(inventarioService).findByProductoId(dtoInput.getProductoId());</span>
+<span class="fc" id="L141">    }</span>
+
+    @Test
+    void findByIdProductoNoEncontrado() throws Exception{
+<span class="fc" id="L145">        when(inventarioService.findByProductoId(dtoInput.getProductoId())).thenThrow(idNoExisteException);</span>
+<span class="fc" id="L146">        mockMvc.perform(get(&quot;/api/v1/inventarios/by-id-producto/{id}&quot;, dtoInput.getProductoId()))</span>
+<span class="fc" id="L147">                .andExpect(status().isNotFound())</span>
+<span class="fc" id="L148">                .andExpect(jsonPath(&quot;$.detail&quot;).value(idNoExisteException.getMessage()));</span>
+<span class="fc" id="L149">        verify(inventarioService).findByProductoId(dtoInput.getProductoId());</span>
+<span class="fc" id="L150">    }</span>
+
+    @Test
+    void updateTest() throws Exception {
+<span class="fc" id="L154">        when(inventarioService.update(dtoUpdate)).thenReturn(dtoResponse1);</span>
+<span class="fc" id="L155">        mockMvc.perform(put(&quot;/api/v1/inventarios/{id}&quot;, dtoUpdate.getId())</span>
+<span class="fc" id="L156">                        .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L157">                        .content(objectMapper.writeValueAsString(dtoUpdate)))</span>
+<span class="fc" id="L158">                .andExpect(status().isOk())</span>
+<span class="fc" id="L159">                .andExpect(jsonPath(&quot;$.productoId&quot;).value(dtoUpdate.getProductoId()));</span>
+<span class="fc" id="L160">        verify(inventarioService).update(dtoUpdate);</span>
+<span class="fc" id="L161">    }</span>
+
+    @Test
+    void updateNoEncontradoTest() throws Exception{
+<span class="fc" id="L165">        when(inventarioService.update(dtoUpdate)).thenThrow(idNoExisteException);</span>
+<span class="fc" id="L166">        mockMvc.perform(put(&quot;/api/v1/inventarios/{id}&quot;, dtoUpdate.getId())</span>
+<span class="fc" id="L167">                        .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L168">                        .content(objectMapper.writeValueAsString(dtoUpdate)))</span>
+<span class="fc" id="L169">                .andExpect(status().isNotFound())</span>
+<span class="fc" id="L170">                .andExpect(jsonPath(&quot;$.detail&quot;).value(idNoExisteException.getMessage()));</span>
+<span class="fc" id="L171">        verify(inventarioService).update(dtoUpdate);</span>
+<span class="fc" id="L172">    }</span>
+
+    @Test
+    void deleteByIdTest() throws Exception{
+<span class="fc" id="L176">        Long id = 1L;</span>
+<span class="fc" id="L177">        when(inventarioService.deleteById(id)).thenReturn(true);</span>
+<span class="fc" id="L178">        mockMvc.perform(delete(&quot;/api/v1/inventarios/{id}&quot;, id))</span>
+<span class="fc" id="L179">                .andExpect(status().isNoContent());</span>
+<span class="fc" id="L180">        verify(inventarioService).deleteById(id);</span>
+<span class="fc" id="L181">    }</span>
+
+    @Test
+    void deleteByIdNoEncontradoTest() throws Exception{
+<span class="fc" id="L185">        Long id = 1L;</span>
+<span class="fc" id="L186">        when(inventarioService.deleteById(id)).thenThrow(idNoExisteException);</span>
+<span class="fc" id="L187">        mockMvc.perform(delete(&quot;/api/v1/inventarios/{id}&quot;, id))</span>
+<span class="fc" id="L188">                .andExpect(status().isNotFound())</span>
+<span class="fc" id="L189">                .andExpect(jsonPath(&quot;$.detail&quot;).value(idNoExisteException.getMessage()));</span>
+<span class="fc" id="L190">        verify(inventarioService).deleteById(id);</span>
+<span class="fc" id="L191">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -1,4 +1,4 @@
-package cl.duoc.lmstockms;
+package cl.duoc.lmstockms.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -12,12 +12,10 @@ import cl.duoc.lmstockms.dtos.InventarioResponseDTO;
 import cl.duoc.lmstockms.dtos.InventarioUpdateDTO;
 import cl.duoc.lmstockms.exceptions.IdExisteException;
 import cl.duoc.lmstockms.exceptions.IdNoExisteException;
-import cl.duoc.lmstockms.security.SecurityConfig;
 import cl.duoc.lmstockms.services.InventarioService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.security.autoconfigure.SecurityAutoConfiguration;
 import org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;

@@ -1,4 +1,4 @@
-package cl.duoc.lmstockms;
+package cl.duoc.lmstockms.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
